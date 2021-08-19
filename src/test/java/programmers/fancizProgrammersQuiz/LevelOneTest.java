@@ -239,4 +239,88 @@ public class LevelOneTest {
 
         assertThat(answer, is(result));
     }
+
+    /**
+     * 1부터 입력받은 숫자 n 사이에 있는 소수의 개수를 반환하는 함수, solution을 만들어 보세요.
+     */
+    @Test
+    public void 소수찾기() {
+        final int answer = 4;
+        int n = 10;
+        int result = 0;
+
+        for(int i=2; i<=n; i++) {
+            boolean isDecimal = true;
+
+            //2부터 판별해야하는 숫자(i)까지 나눴을때 소수인지 판별이 가능한데
+            //j*j 루트 이용하지 않으면 엄청 큰 수가 들어왔을때 계속 나눠야하다보니 타임아웃이 났다. j<=i 일때는 O(N)
+            //모든 수를 나누지 않고 루트를 활용하여 루트의 값만큼만 체크하여 시간복잡도가 줄어든다. j*j<=i 일때는 O(√N)
+            //Math.sqrt() 메소드를 이용하면 루트를 구할 수 있다.
+            for(int j=2; j*j<=i; j++) {
+                if(i % j == 0) {
+                    isDecimal = false;
+                    break;
+                }
+            }
+
+            if(isDecimal) result++;
+        }
+
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * 문자열 s는 한 개 이상의 단어로 구성되어 있습니다. 각 단어는 하나 이상의 공백문자로 구분되어 있습니다. 각 단어의 짝수번째 알파벳은 대문자로, 홀수번째 알파벳은 소문자로 바꾼 문자열을 리턴하는 함수, solution을 완성하세요.
+     * 문자열 전체의 짝/홀수 인덱스가 아니라, 단어(공백을 기준)별로 짝/홀수 인덱스를 판단해야합니다.
+     * 첫 번째 글자는 0번째 인덱스로 보아 짝수번째 알파벳으로 처리해야 합니다.
+     */
+    @Test
+    public void 이상한숫자만들기() {
+        String answer = "TrY HeLlO WoRlD  ";
+        String s = "try hello world  ";
+
+        /*List<String> list = Arrays.stream(s.split(" "))
+                .collect(Collectors.toList());
+
+        StringBuilder sb = new StringBuilder();
+
+        int index = 0;
+
+        for(String str : list ) {
+            int length = str.length();
+
+            for(int i=0; i<length; i++) {
+                if(i % 2 == 0) {
+                    sb.append(str.substring(i, i+1).toUpperCase());
+                } else {
+                    sb.append(str.substring(i, i+1).toLowerCase());
+                }
+            }
+
+            index++;
+            if(index != list.size()) sb.append(" ");
+        }
+
+        휴.. 문제의 함정이 있었다. 공백을 기준으로 배열을 만들어서 처리하면 될거라 생각했는데
+        공백이 여러개가 있을수 있었다. 심지어 공백은 문자열에 그대로 포함되어야한다. 문제에 설명이 없었는데 이걸 예측하고 만들어야하다니..
+        결국 모든 문자를 하나씩 잘라서 공백일때는 공백 그대로 붙이고
+        공백을 제외한 문자에만 index를 매겨 홀짝일때 대소문자 처리를 해줬다.
+        */
+
+        String[] strArray = s.split("");
+        int cnt = 0;
+        StringBuilder sb = new StringBuilder();
+
+        for(String str : strArray) {
+            if(" ".equals(str)) {
+                sb.append(str);
+                cnt = 0;
+            } else {
+                sb.append(cnt % 2 == 0 ? str.toUpperCase() : str.toLowerCase());
+                cnt++;
+            }
+        }
+
+        assertThat(answer, is(sb.toString()));
+    }
 }
