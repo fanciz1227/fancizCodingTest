@@ -3,9 +3,7 @@ package programmers.fancizProgrammersQuiz;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -322,5 +320,83 @@ public class LevelOneTest {
         }
 
         assertThat(answer, is(sb.toString()));
+    }
+
+    /**
+     * 대문자와 소문자가 섞여있는 문자열 s가 주어집니다. s에 'p'의 개수와 'y'의 개수를 비교해 같으면 True, 다르면 False를 return 하는 solution를 완성하세요. 'p', 'y' 모두 하나도 없는 경우는 항상 True를 리턴합니다. 단, 개수를 비교할 때 대문자와 소문자는 구별하지 않습니다.
+     * 예를 들어 s가 "pPoooyY"면 true를 return하고 "Pyy"라면 false를 return합니다.
+     */
+    @Test
+    public void 문자열내p와y의개수() {
+        boolean answer = true;
+        boolean result = false;
+        String s = "pPoooyY";
+        int pCnt = 0;
+        int yCnt = 0;
+
+        String[] list = s.toLowerCase().split("");
+
+        for(int i=0; i<list.length; i++) {
+            switch (String.valueOf(list[i])) {
+                case "p" : pCnt++; break;
+                case "y" : yCnt++; break;
+                default: break;
+            }
+        }
+
+        if(pCnt == yCnt) result = true;
+
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * 수포자는 수학을 포기한 사람의 준말입니다. 수포자 삼인방은 모의고사에 수학 문제를 전부 찍으려 합니다. 수포자는 1번 문제부터 마지막 문제까지 다음과 같이 찍습니다.
+     * 1번 수포자가 찍는 방식: 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, ...
+     * 2번 수포자가 찍는 방식: 2, 1, 2, 3, 2, 4, 2, 5, 2, 1, 2, 3, 2, 4, 2, 5, ...
+     * 3번 수포자가 찍는 방식: 3, 3, 1, 1, 2, 2, 4, 4, 5, 5, 3, 3, 1, 1, 2, 2, 4, 4, 5, 5, ...
+     * 1번 문제부터 마지막 문제까지의 정답이 순서대로 들은 배열 answers가 주어졌을 때, 가장 많은 문제를 맞힌 사람이 누구인지 배열에 담아 return 하도록 solution 함수를 작성해주세요.
+     */
+    @Test
+    public void 모의고사() {
+        int[] answer = {1};
+        int[] answers = {1,2,3,4,5,1,2,3,4,5};
+        int[] as1 = {1,2,3,4,5};
+        int[] as2 = {2,1,2,3,2,4,2,5};
+        int[] as3 = {3,3,1,1,2,2,4,4,5,5};
+
+        int[] asCnt = new int[3];
+
+        for(int i=0; i<answers.length; i++) {
+            if(answers[i] == as1[i % as1.length]) asCnt[0]++;
+            if(answers[i] == as2[i % as2.length]) asCnt[1]++;
+            if(answers[i] == as3[i % as3.length]) asCnt[2]++;
+        }
+
+        LinkedHashMap<Integer, Integer> maxMap = new LinkedHashMap<>();
+        maxMap.put(1, asCnt[0]); //수포자1
+        maxMap.put(2, asCnt[1]); //수포자2
+        maxMap.put(3, asCnt[2]); //수포자3
+
+        //수포자 3명의 답안지 중 제일 많이 맞춘 수 추출
+        int max = maxMap.get(1);
+        if(maxMap.get(2) > max) max = maxMap.get(2);
+        if(maxMap.get(3) > max) max = maxMap.get(3);
+
+        ArrayList<Integer> list = new ArrayList<>();
+
+        for(int i=1; i<=maxMap.size(); i++) {
+            if(max == maxMap.get(i)) list.add(i);
+        }
+
+        int[] result = new int[list.size()];
+
+        //오름차순 정렬을 위해 순서대로 입력
+        //list.stream().mapToInt(i->i.intValue()).toArray(); stream을 이용하면 더 깔끔하게 처리가 되지만 실행속도에서 차이가 많이 난다.
+        //for->0.08ms, stream->6.0ms
+        for(int i=0; i<list.size(); i++) {
+            result[i] = list.get(i);
+        }
+
+        assertThat(answer, is(result));
     }
 }
