@@ -3,7 +3,10 @@ package programmers.fancizProgrammersQuiz;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -396,6 +399,114 @@ public class LevelOneTest {
         for(int i=0; i<list.size(); i++) {
             result[i] = list.get(i);
         }
+
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * 자연수 n을 뒤집어 각 자리 숫자를 원소로 가지는 배열 형태로 리턴해주세요. 예를들어 n이 12345이면 [5,4,3,2,1]을 리턴합니다.
+     */
+    @Test
+    public void 자연수뒤집어배열로만들기() {
+        int[] answer = {5,4,3,2,1};
+        long n = 12345;
+        int[] result = new int[String.valueOf(n).length()];
+        String[] list = String.valueOf(n).split("");
+        int cnt = 0;
+
+        for(int i=list.length-1; i>=0; i--){
+            result[cnt] = Integer.parseInt(list[i]);
+            cnt++;
+        }
+
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * 양의 정수 x가 하샤드 수이려면 x의 자릿수의 합으로 x가 나누어져야 합니다. 예를 들어 18의 자릿수 합은 1+8=9이고, 18은 9로 나누어 떨어지므로 18은 하샤드 수입니다.
+     * 자연수 x를 입력받아 x가 하샤드 수인지 아닌지 검사하는 함수, solution을 완성해주세요.
+     */
+    @Test
+    public void 하샤드수() {
+        boolean answer = true;
+        int x = 10;
+        String[] list = String.valueOf(x).split("");
+        int sum = 0;
+        boolean result;
+
+        for(String str : list) {
+            sum += Integer.parseInt(str);
+        }
+
+        result = (x % sum == 0) ? true : false;
+
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * String형 배열 seoul의 element중 "Kim"의 위치 x를 찾아, "김서방은 x에 있다"는 String을 반환하는 함수, solution을 완성하세요. seoul에 "Kim"은 오직 한 번만 나타나며 잘못된 값이 입력되는 경우는 없습니다.
+     */
+    @Test
+    public void 서울에서김서방찾기() {
+        String answer = "김서방은 1에 있다";
+        String[] seoul = {"Jane", "Kim"};
+        String result = "";
+
+        //Arrays.asList(array).contains(value)를 사용하면 간략하게 할 수 있지만 굳이 변경하는 비용을 사용해서까지 할 내용은 아닌듯하다.
+        for(int i=0; i<seoul.length; i++) {
+            if("Kim".equals(seoul[i])) {
+                result = "김서방은 " + i + "에 있다";
+                break; //오직 한번만 나타나기 때문에 찾으면 break를 써서 불필요한 탐색을 중지한다.
+            }
+        }
+
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * 길이가 n이고, "수박수박수박수...."와 같은 패턴을 유지하는 문자열을 리턴하는 함수, solution을 완성하세요. 예를들어 n이 4이면 "수박수박"을 리턴하고 3이라면 "수박수"를 리턴하면 됩니다.
+     */
+    @Test
+    public void 수박수박수() {
+        String answer = "수박수박";
+        StringBuilder sb = new StringBuilder();
+        int n = 4;
+
+        for(int i=0; i<n; i++) {
+            sb.append((i % 2 == 0) ? "수" : "박");
+        }
+
+        assertThat(answer, is(sb.toString()));
+    }
+
+    /**
+     * 1937년 Collatz란 사람에 의해 제기된 이 추측은, 주어진 수가 1이 될때까지 다음 작업을 반복하면, 모든 수를 1로 만들 수 있다는 추측입니다. 작업은 다음과 같습니다.
+     * 1-1. 입력된 수가 짝수라면 2로 나눕니다.
+     * 1-2. 입력된 수가 홀수라면 3을 곱하고 1을 더합니다.
+     * 2. 결과로 나온 수에 같은 작업을 1이 될 때까지 반복합니다.
+     * 예를 들어, 입력된 수가 6이라면 6→3→10→5→16→8→4→2→1 이 되어 총 8번 만에 1이 됩니다. 위 작업을 몇 번이나 반복해야하는지 반환하는 함수, solution을 완성해 주세요. 단, 작업을 500번을 반복해도 1이 되지 않는다면 –1을 반환해 주세요.
+     */
+    @Test
+    public void 콜라츠추측() {
+        int answer = -1;
+        long num = 626331;
+        int cnt = 0;
+        long lNum = num;
+        int result = 0;
+
+        while(cnt<=500) {
+            if(lNum == 1) break;
+
+            if(lNum % 2 == 0) {
+                lNum = lNum / 2L;
+            } else {
+                lNum = (lNum * 3L) + 1;
+            }
+
+            cnt++;
+        }
+
+        result = cnt < 500 ? cnt : -1;
 
         assertThat(answer, is(result));
     }
