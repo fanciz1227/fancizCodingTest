@@ -1,13 +1,13 @@
-package programmers.fancizProgrammersQuiz;
+package codingtest.fancizCodingTest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FancizProgrammersQuizApplication {
+public class FancizCodingTestApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FancizProgrammersQuizApplication.class, args);
+		SpringApplication.run(FancizCodingTestApplication.class, args);
 	}
 
 }
