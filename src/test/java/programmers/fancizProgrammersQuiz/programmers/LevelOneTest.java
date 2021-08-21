@@ -1,4 +1,4 @@
-package programmers.fancizProgrammersQuiz;
+package programmers.fancizProgrammersQuiz.programmers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
