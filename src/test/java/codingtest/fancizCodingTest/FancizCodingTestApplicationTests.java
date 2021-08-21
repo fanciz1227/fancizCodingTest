@@ -1,10 +1,10 @@
-package programmers.fancizProgrammersQuiz;
+package codingtest.fancizCodingTest;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FancizProgrammersQuizApplicationTests {
+class FancizCodingTestApplicationTests {
 
 	@Test
 	void contextLoads() {
