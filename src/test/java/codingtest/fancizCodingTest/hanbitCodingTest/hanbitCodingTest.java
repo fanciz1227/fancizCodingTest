@@ -6,6 +6,7 @@ import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -151,5 +152,43 @@ public class hanbitCodingTest {
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint() + "cnt: " + cnt);
         assertThat(answer, is(cnt));
+    }
+
+    /**
+     * 대문자로 이루어진 알파벳과 숫자를 str로 제공할때 알파벳대문자 오름차순 정렬후 숫자는 모두 더하여 정렬된 알파벳 문자 뒤에 추가해준다.
+     * 대문자로만 이루어진 알파벳이 제공된다.
+     * 숫자는 데이터가 있으면 모두 더해 마지막에 문자열에 붙여준다.
+     */
+    @Test
+    public void 문자열재정렬() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        String answer = "ADDIJJJKKLSS20";
+        String str = "AJKDLSI412K4JSJ9D";
+        List<String> sStr = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        int intSum = 0;
+
+        for(int i=0; i<str.length(); i++) {
+            char ch = str.charAt(i);
+            if (48 <= ch && ch <= 57) {
+                intSum += Integer.parseInt(String.valueOf(ch));
+            } else if(65 <= ch && ch <=90){
+                sStr.add(String.valueOf(ch));
+            }
+        }
+
+        Collections.sort(sStr);
+
+        for(String ss : sStr) {
+            sb.append(ss);
+        }
+
+        if(intSum > 0) sb.append(intSum);
+
+        stopWatch.stop();
+        System.out.println(stopWatch.getTotalTimeSeconds() + ", string: " + sb.toString());
+        assertThat(answer, is(sb.toString()));
     }
 }
