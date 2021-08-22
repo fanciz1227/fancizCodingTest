@@ -95,7 +95,7 @@ public class LevelTwoTest {
         //오랜만에 행렬의 곱셉 식을 찾아봤다.
         //(0,0)*(0,0) + (0,1)*(1,0) + (0,2)*(2,0) = (0,0) 과 같은 수식으로 차례대로 넣어야한다.
         //곱하는 배열의 수식은 arr1, arr2에 따라서 result의 배열속성이 정해지며
-        //
+        //result를 생성할 때 크기 옵션을 arr2[0].length로 줘야 값이 잘못 생성되지 않는다.
         for (int i=0; i<arr1.length; i++) {
             for (int j=0; j<arr2[0].length; j++) {
                 for (int x=0; x<arr1[0].length; x++) {
