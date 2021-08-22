@@ -68,7 +68,7 @@ public class hanbitCodingTest {
         int[] dx = {0,0,-1,1};
         int[] dy = {-1,1,0,0};
 
-        for(String str : locate) {
+        for (String str : locate) {
             int nx = 0;
             int ny = 0;
 
@@ -141,9 +141,9 @@ public class hanbitCodingTest {
         알고리즘 문제를 많이 풀어보지 않은게 티가 난다.
         */
 
-        for(int h=0; h<=n; h++) {
-            for(int m=0; m<60; m++) {
-                for(int s=0; s<60; s++) {
+        for (int h=0; h<=n; h++) {
+            for (int m=0; m<60; m++) {
+                for (int s=0; s<60; s++) {
                     if(h % 10 == 3 || m / 10 == 3 || m % 10 == 3 || s / 10 == 3 || s % 10 == 3) cnt++;
                 }
             }
@@ -170,8 +170,10 @@ public class hanbitCodingTest {
         StringBuilder sb = new StringBuilder();
         int intSum = 0;
 
-        for(int i=0; i<str.length(); i++) {
+        for (int i=0; i<str.length(); i++) {
             char ch = str.charAt(i);
+
+            //아스키 코드 값을 활용해 숫자와 대문자를 구분하였다.
             if (48 <= ch && ch <= 57) {
                 intSum += Integer.parseInt(String.valueOf(ch));
             } else if(65 <= ch && ch <=90){
@@ -179,12 +181,14 @@ public class hanbitCodingTest {
             }
         }
 
+        //수집된 대문자를 오름차순으로 정렬한다.
         Collections.sort(sStr);
 
         for(String ss : sStr) {
             sb.append(ss);
         }
 
+        //수집된 숫자 데이터가 있으면 정렬된 대문자 문자열 뒤에 붙여준다.
         if(intSum > 0) sb.append(intSum);
 
         stopWatch.stop();
