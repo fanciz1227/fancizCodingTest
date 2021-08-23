@@ -251,7 +251,7 @@ public class LevelOneTest {
         int result = 0;
 
         for(int i=2; i<=n; i++) {
-            boolean isDecimal = true;
+            boolean isPrime = true;
 
             //2부터 판별해야하는 숫자(i)까지 나눴을때 소수인지 판별이 가능한데
             //j*j 루트 이용하지 않으면 엄청 큰 수가 들어왔을때 계속 나눠야하다보니 타임아웃이 났다. j<=i 일때는 O(N)
@@ -259,12 +259,12 @@ public class LevelOneTest {
             //Math.sqrt() 메소드를 이용하면 루트를 구할 수 있다.
             for(int j=2; j*j<=i; j++) {
                 if(i % j == 0) {
-                    isDecimal = false;
+                    isPrime = false;
                     break;
                 }
             }
 
-            if(isDecimal) result++;
+            if(isPrime) result++;
         }
 
         assertThat(answer, is(result));

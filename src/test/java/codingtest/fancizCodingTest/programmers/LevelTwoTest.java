@@ -4,6 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StopWatch;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -110,7 +114,88 @@ public class LevelTwoTest {
         assertThat(answer, is(result));
     }
 
+    /**
+     * 한자리 숫자가 적힌 종이 조각이 흩어져있습니다. 흩어진 종이 조각을 붙여 소수를 몇 개 만들 수 있는지 알아내려 합니다.
+     * 각 종이 조각에 적힌 숫자가 적힌 문자열 numbers가 주어졌을 때, 종이 조각으로 만들 수 있는 소수가 몇 개인지 return 하도록 solution 함수를 완성해주세요.
+     */
+    public static List<Integer> permutationList = new ArrayList<>();
+
     @Test
     public void 소수찾기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 2;
+        String numbers = "011";
+        String[] nArr = numbers.split("");
+        String[] output = new String[nArr.length];
+        boolean[] visited = new boolean[nArr.length];
+        int n = nArr.length;
+        int r = nArr.length;
+
+        //dfs 재귀 호출 시작
+        dfs(nArr, output, visited, 0, n, r);
+
+        //소수만 찾아서 카운트 증가 후 리턴 받는다.
+        int decimalCnt = findPrime(permutationList.stream().distinct().collect(Collectors.toList()));
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+
+        assertThat(answer, is(decimalCnt));
+    }
+
+    //dfs를 통해 모든 순열의 데이터를 얻는다.
+    private void dfs(String[] arr, String[] output, boolean[] visited, int depth, int n, int r) {
+        if (depth == r) {
+            setPermutationList(output);
+            return;
+        }
+
+        for (int i=0; i<n; i++) {
+            if (!visited[i]) { //방문한 노드가 아니면
+                visited[i] = true; //방문처리를 먼저 한다.
+                output[depth] = arr[i];
+                dfs(arr, output, visited, depth+1, n, r);
+                visited[i] = false;
+            }
+        }
+    }
+
+    //순열로 얻은 모든 데이터들을 숫자화 시킨다.
+    private void setPermutationList(String[] output) {
+        StringBuilder sb = new StringBuilder();
+
+        //재귀 처리를 하면서 나오게 되는 경우의 수 배열을 for문으로 하나의 숫자처럼 처리한다.
+        for(int i=0; i<output.length; i++) {
+
+            sb.append(output[i]);
+            //순열을 돌리면서 나온 모든 경우의수를 붙여서 숫자로 인식하게 한다.
+            //ex) [1,0,1] => 101
+            permutationList.add(Integer.parseInt(sb.toString()));
+        }
+    }
+
+    //소수 찾기
+    private int findPrime(List<Integer> list) {
+        int cnt = 0;
+
+        //중복체크하여 정렬한 데이터의 size만큼 돈다.
+        for (int i=0; i<list.size(); i++) {
+            boolean isPrime = true;
+
+            if(list.get(i).intValue() > 1) { // 0,1은 소수가 아니므로 제외시킨다.
+                for (int j=2; j*j<=list.get(i).intValue(); j++) { //루트를 이용하여 타임아웃을 방지한다.
+                    if(list.get(i).intValue() % j == 0) {
+                        isPrime = false;
+                        break;
+                    }
+                }
+
+                if(isPrime) cnt++;
+            }
+        }
+
+        return cnt;
     }
 }
