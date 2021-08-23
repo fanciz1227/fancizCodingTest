@@ -4,10 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StopWatch;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -25,7 +22,7 @@ public class hanbitCodingTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        int answer = 576;
+        final int answer = 576;
         String n = "02984";
         String[] nArray = n.split("");
 
@@ -56,10 +53,10 @@ public class hanbitCodingTest {
     public void 상하좌우이동() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        String answer = "3,4";
-        int n = 5;
+        final String answer = "3,4";
         String locateString = "RRRUDD";
         List<String> locate = new ArrayList<>(Arrays.asList(locateString.split("")));
+        int n = 5;
         int x = 1;
         int y = 1;
 
@@ -119,7 +116,7 @@ public class hanbitCodingTest {
     public void 시간에서특정숫자찾기() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        int answer = 11475;
+        final int answer = 11475;
         int n = 5;
         int cnt = 0;
         /*
@@ -164,7 +161,7 @@ public class hanbitCodingTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        String answer = "ADDIJJJKKLSS20";
+        final String answer = "ADDIJJJKKLSS20";
         String str = "AJKDLSI412K4JSJ9D";
         List<String> sStr = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
@@ -194,5 +191,251 @@ public class hanbitCodingTest {
         stopWatch.stop();
         System.out.println(stopWatch.getTotalTimeSeconds() + ", string: " + sb.toString());
         assertThat(answer, is(sb.toString()));
+    }
+
+    /**
+     * 거품정렬은 인접한 두 항목의 값을 비교하여 기준을 만족하면 서로 값을 교환하여 정렬한다.
+     * 시간복잡도 : O(n^2), 공간복잡도 : O(n)
+     * 구현이 간편하고 직관적이다.
+     * 시간복잡도에 있어서는 제일 좋지 않아 비효율적이다. 정렬할때의 swap이 많이 일어나게 된다.
+     */
+    @Test
+    public void 거품정렬() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int[] answer = {0,1,2,3,4,5,6,7,8,9};
+        int[] arr = {6,4,0,2,3,1,9,8,7,5};
+
+        for(int i = 0; i < arr.length; i++) {
+            for(int j= 1 ; j < arr.length-i; j++) {
+                if(arr[j-1] > arr[j]) { //현재의 비교 값을 하나씩 비교하며 이동시킨다. swap이 굉장히 많이 발생한다.
+                    int temp = arr[j-1];
+                    arr[j-1] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(arr));
+    }
+
+    /**
+     * 선택정렬은 제자리 정렬 알고리즘의 하나이다.
+     * 처리되지 않은 데이터 중에서 가장 작은 데이터를 선택해서 맨 앞에 있는 데이터와 바꾸는것을 반복한다.
+     * 시간복잡도 : O(n^2), 공간복잡도 : O(n)
+     * 버블과 마찬가지로 알고리즘이 간단하다. 버블보다는 swap이 덜 발생하기 때문에 비교적 효율적이다.
+     * 버블과 마찬가지로 시간복잡도에 있어서 효율적이지 않으며 불안정 정렬(Unstable Sort)이다.
+     */
+    @Test
+    public void 선택정렬() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int[] answer = {0,1,2,3,4,5,6,7,8,9};
+        int[] arr = {6,4,0,2,3,1,9,8,7,5};
+
+        for(int i=0; i<arr.length; i++) {
+            int minIndex = i; //가장 작은 원소를 기록한다.
+            for(int j=i+1; j<arr.length; j++) {
+                if(arr[minIndex] > arr[j]) { //가장 작은 원소의 값이 비교대상인 j의 값보다 크면 j로 대체한다.
+                    minIndex = j;
+                }
+            }
+
+            //temp의 현재 작은 값을 넣고
+            //arr[i]에 제일 작은 원소값을 넣어 대체하여
+            //arr[minIndex]에 temp를 다시 넣어 최종적으로 위치를 변경해준다.
+            int temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+
+        assertThat(answer, is(arr));
+    }
+
+    /**
+     * 삽입정렬은 배열의 모든 요소를 앞에서부터 차례대로 이미 정렬된 배열 부분과 비교하여, 자신의 위치를 찾아 삽입함으로써 정렬을 완성하는 알고리즘이다.
+     * 시간복잡도 : O(n^2), 공간복잡도 : O(n)
+     * 알고리즘이 단순하며 이미 정렬되어있을때는 매우 효율적일 수 있다. 안정 정렬(Stable Sort) 이다.
+     * 정렬이 되어있을때를 제외하고는 시간복잡도는 똑같이 비효율적이다.
+     */
+    @Test
+    public void 삽입정렬() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int[] answer = {0,1,2,3,4,5,6,7,8,9};
+        int[] arr = {6,4,0,2,3,1,9,8,7,5};
+
+        for(int i=1; i<arr.length; i++) {
+            for(int j=i; j>0; j--) { //한칸씩 왼쪽으로 이동하며 위치를 바꿔준다.
+                if(arr[j] < arr[j-1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j-1];
+                    arr[j-1] = temp;
+                }
+                else break; //자기보다 작은 데이터를 만나면 위치를 변경하지 않는다.
+            }
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+
+        assertThat(answer, is(arr));
+    }
+
+
+    /**
+     *      1 - 2
+     *     / \   \
+     *    3   \   7
+     *   / \   \ / \
+     *  4   5   8   6
+     *
+     *  다음과 같은 노드가 주어졌을때 DFS, BFS를 이용하여 탐색하는 과정을 구한다.
+     */
+    public static boolean[] visited = new boolean[9];
+    public static ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
+
+    /**
+     * DFS(Depth-First Search) - 깊이 우선 탐색
+     * 깊이우선탐색은 깊이가 가장 깊은 부분을 우선적으로 탐색하는 알고리즘이다.
+     * 스택이나 재귀함수를 이용하여 구현한다.
+     */
+    @Test
+    public void 깊이우선탐색() {
+        // 그래프 초기화
+        for (int i = 0; i < 9; i++) {
+            graph.add(new ArrayList<Integer>());
+        }
+
+        // 노드 1에 연결된 노드 정보 저장
+        graph.get(1).add(2);
+        graph.get(1).add(3);
+        graph.get(1).add(8);
+
+        // 노드 2에 연결된 노드 정보 저장
+        graph.get(2).add(1);
+        graph.get(2).add(7);
+
+        // 노드 3에 연결된 노드 정보 저장
+        graph.get(3).add(1);
+        graph.get(3).add(4);
+        graph.get(3).add(5);
+
+        // 노드 4에 연결된 노드 정보 저장
+        graph.get(4).add(3);
+        graph.get(4).add(5);
+
+        // 노드 5에 연결된 노드 정보 저장
+        graph.get(5).add(3);
+        graph.get(5).add(4);
+
+        // 노드 6에 연결된 노드 정보 저장
+        graph.get(6).add(7);
+
+        // 노드 7에 연결된 노드 정보 저장
+        graph.get(7).add(2);
+        graph.get(7).add(6);
+        graph.get(7).add(8);
+
+        // 노드 8에 연결된 노드 정보 저장
+        graph.get(8).add(1);
+        graph.get(8).add(7);
+
+        dfs(1);
+    }
+
+    private void dfs(int x) {
+        //현재의 노드를 방문 처리한다.
+        visited[x] = true;
+        //방문한 순서대로 출력한다.
+        System.out.print(x + " ");
+
+        //현재 노드와 연결된 다른 노드를 재귀 방문 처리한다.
+        //인접된 노드에 접근시 숫자가 작은 노드부터 탐색한다.
+        for (int i=0; i<graph.get(x).size(); i++) { //선택된 노드의 사이즈만큼 방문한다.
+            int y = graph.get(x).get(i); //선택된 노드의 인접 노드를 구한다.
+            if(!visited[y]) dfs(y); //인접 노드를 방문하지 않았다면 재귀 호출한다.
+        }
+    }
+
+    /**
+     * BFS(Breadth-First Search) - 너비우선탐색
+     * 너비우선탐색은 가까운 노드부터 우선적으로 탐색하는 알고리즘이다.
+     * Que를 이용하여 구현한다.
+     */
+    @Test
+    public void 너비우선탐색() {
+        // 그래프 초기화
+        for (int i = 0; i < 9; i++) {
+            graph.add(new ArrayList<Integer>());
+        }
+
+        // 노드 1에 연결된 노드 정보 저장
+        graph.get(1).add(2);
+        graph.get(1).add(3);
+        graph.get(1).add(8);
+
+        // 노드 2에 연결된 노드 정보 저장
+        graph.get(2).add(1);
+        graph.get(2).add(7);
+
+        // 노드 3에 연결된 노드 정보 저장
+        graph.get(3).add(1);
+        graph.get(3).add(4);
+        graph.get(3).add(5);
+
+        // 노드 4에 연결된 노드 정보 저장
+        graph.get(4).add(3);
+        graph.get(4).add(5);
+
+        // 노드 5에 연결된 노드 정보 저장
+        graph.get(5).add(3);
+        graph.get(5).add(4);
+
+        // 노드 6에 연결된 노드 정보 저장
+        graph.get(6).add(7);
+
+        // 노드 7에 연결된 노드 정보 저장
+        graph.get(7).add(2);
+        graph.get(7).add(6);
+        graph.get(7).add(8);
+
+        // 노드 8에 연결된 노드 정보 저장
+        graph.get(8).add(1);
+        graph.get(8).add(7);
+
+        bfs(1);
+    }
+
+    private void bfs(int start) {
+        //que를 생성하여 시작값을 넣어준다.
+        Queue<Integer> que = new LinkedList<>();
+        que.offer(start);
+
+        //현재의 노드를 방문 처리한다.
+        visited[start] = true;
+
+        //que가 모두 처리 될때까지 반복한다.
+        while (!que.isEmpty()) {
+            int x = que.poll(); //que의 원소를 추출하여 출력한다.
+            System.out.print(x + " ");
+
+            for (int i=0; i<graph.get(x).size(); i++) { //que에서 출력한 원소의 인접 노드들 중에서 아직 방문처리가 되지 않은 원소들을 탐색한다.
+                int j = graph.get(x).get(i);
+
+                if(!visited[j]) { //방문되지 않은 노드이면 que에 삽입 후 방문 처리한다.
+                    que.offer(j);
+                    visited[j] = true;
+                }
+            }
+        }
     }
 }
