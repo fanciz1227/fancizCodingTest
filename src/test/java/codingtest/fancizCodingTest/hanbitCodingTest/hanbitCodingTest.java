@@ -195,4 +195,100 @@ public class hanbitCodingTest {
         System.out.println(stopWatch.getTotalTimeSeconds() + ", string: " + sb.toString());
         assertThat(answer, is(sb.toString()));
     }
+
+    /**
+     * 거품정렬은 인접한 두 항목의 값을 비교하여 기준을 만족하면 서로 값을 교환하여 정렬한다.
+     * 시간복잡도 : O(n^2), 공간복잡도 : O(n)
+     * 구현이 간편하고 직관적이다.
+     * 시간복잡도에 있어서는 제일 좋지 않아 비효율적이다. 정렬할때의 swap이 많이 일어나게 된다.
+     */
+    @Test
+    public void 거품정렬() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        int[] answer = {0,1,2,3,4,5,6,7,8,9};
+        int[] arr = {6,4,0,2,3,1,9,8,7,5};
+
+        for(int i = 0; i < arr.length; i++) {
+            for(int j= 1 ; j < arr.length-i; j++) {
+                if(arr[j-1] > arr[j]) { //현재의 비교 값을 하나씩 비교하며 이동시킨다. swap이 굉장히 많이 발생한다.
+                    int temp = arr[j-1];
+                    arr[j-1] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+    }
+
+    /**
+     * 선택정렬은 제자리 정렬 알고리즘의 하나이다.
+     * 처리되지 않은 데이터 중에서 가장 작은 데이터를 선택해서 맨 앞에 있는 데이터와 바꾸는것을 반복한다.
+     * 시간복잡도 : O(n^2), 공간복잡도 : O(n)
+     * 버블과 마찬가지로 알고리즘이 간단하다. 버블보다는 swap이 덜 발생하기 때문에 비교적 효율적이다.
+     * 버블과 마찬가지로 시간복잡도에 있어서 효율적이지 않으며 불안정 정렬(Unstable Sort)이다.
+     */
+    @Test
+    public void 선택정렬() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        int[] answer = {0,1,2,3,4,5,6,7,8,9};
+        int[] arr = {6,4,0,2,3,1,9,8,7,5};
+
+        for(int i=0; i<arr.length; i++) {
+            int minIndex = i; //가장 작은 원소를 기록한다.
+            for(int j=i+1; j<arr.length; j++) {
+                if(arr[minIndex] > arr[j]) { //가장 작은 원소의 값이 비교대상인 j의 값보다 크면 j로 대체한다.
+                    minIndex = j;
+                }
+            }
+
+            //temp의 현재 작은 값을 넣고
+            //arr[i]에 제일 작은 원소값을 넣어 대체하여
+            //arr[minIndex]에 temp를 다시 넣어 최종적으로 위치를 변경해준다.
+            int temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+
+        assertThat(answer, is(arr));
+    }
+
+    /**
+     * 삽입정렬은 배열의 모든 요소를 앞에서부터 차례대로 이미 정렬된 배열 부분과 비교하여, 자신의 위치를 찾아 삽입함으로써 정렬을 완성하는 알고리즘이다.
+     * 시간복잡도 : O(n^2), 공간복잡도 : O(n)
+     * 알고리즘이 단순하며 이미 정렬되어있을때는 매우 효율적일 수 있다. 안정 정렬(Stable Sort) 이다.
+     * 정렬이 되어있을때를 제외하고는 시간복잡도는 똑같이 비효율적이다.
+     */
+    @Test
+    public void 삽입정렬() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        int[] answer = {0,1,2,3,4,5,6,7,8,9};
+        int[] arr = {6,4,0,2,3,1,9,8,7,5};
+
+        for(int i=1; i<arr.length; i++) {
+            for(int j=i; j>0; j--) { //한칸씩 왼쪽으로 이동하며 위치를 바꿔준다.
+                if(arr[j] < arr[j-1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j-1];
+                    arr[j-1] = temp;
+                }
+                else break; //자기보다 작은 데이터를 만나면 위치를 변경하지 않는다.
+            }
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+
+        assertThat(answer, is(arr));
+    }
 }

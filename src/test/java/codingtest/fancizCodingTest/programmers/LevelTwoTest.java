@@ -109,4 +109,14 @@ public class LevelTwoTest {
 
         assertThat(answer, is(result));
     }
+
+    @Test
+    public void 소수찾기() {
+        /*int t = 011;
+        if(t % 2 == 0 ) {
+            System.out.println("소수아님");
+        } else {
+            System.out.println("소수임");
+        }*/
+    }
 }
