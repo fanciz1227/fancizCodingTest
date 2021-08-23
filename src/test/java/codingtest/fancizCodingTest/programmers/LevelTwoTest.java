@@ -20,7 +20,7 @@ public class LevelTwoTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        int answer = 168;
+        final int answer = 168;
         int[] arr = {2,6,8,14};
         int lcmNum = arr[0];
 
@@ -58,7 +58,7 @@ public class LevelTwoTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        String answer = "1 4";
+        final String answer = "1 4";
         String s = "1 2 3 4";
 
         String[] sArr = s.split(" ");
@@ -87,7 +87,7 @@ public class LevelTwoTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        int[][] answer = {{22,22,11}, {36,28,18}, {29,20,14}};
+        final int[][] answer = {{22,22,11}, {36,28,18}, {29,20,14}};
         int[][] arr1 = {{2,3,2}, {4,2,4}, {3,1,4}};
         int[][] arr2 = {{5,4,3}, {2,4,1}, {3,1,1}};
         int[][] result = new int[arr1.length][arr2[0].length];
@@ -112,11 +112,5 @@ public class LevelTwoTest {
 
     @Test
     public void 소수찾기() {
-        /*int t = 011;
-        if(t % 2 == 0 ) {
-            System.out.println("소수아님");
-        } else {
-            System.out.println("소수임");
-        }*/
     }
 }

@@ -230,7 +230,7 @@ public class LevelOneTest {
      */
     @Test
     public void 약수의합() {
-        int answer = 28;
+        final int answer = 28;
         int n = 12;
         int result = 0;
 
@@ -331,11 +331,11 @@ public class LevelOneTest {
      */
     @Test
     public void 문자열내p와y의개수() {
+        int pCnt = 0;
+        int yCnt = 0;
         boolean answer = true;
         boolean result = false;
         String s = "pPoooyY";
-        int pCnt = 0;
-        int yCnt = 0;
 
         String[] list = s.toLowerCase().split("");
 
@@ -408,11 +408,11 @@ public class LevelOneTest {
      */
     @Test
     public void 자연수뒤집어배열로만들기() {
-        int[] answer = {5,4,3,2,1};
         long n = 12345;
+        int cnt = 0;
+        int[] answer = {5,4,3,2,1};
         int[] result = new int[String.valueOf(n).length()];
         String[] list = String.valueOf(n).split("");
-        int cnt = 0;
 
         for(int i=list.length-1; i>=0; i--){
             result[cnt] = Integer.parseInt(list[i]);
@@ -429,10 +429,10 @@ public class LevelOneTest {
     @Test
     public void 하샤드수() {
         boolean answer = true;
-        int x = 10;
-        String[] list = String.valueOf(x).split("");
-        int sum = 0;
         boolean result;
+        int x = 10;
+        int sum = 0;
+        String[] list = String.valueOf(x).split("");
 
         for(String str : list) {
             sum += Integer.parseInt(str);
@@ -489,10 +489,10 @@ public class LevelOneTest {
     @Test
     public void 콜라츠추측() {
         int answer = -1;
-        long num = 626331;
         int cnt = 0;
-        long lNum = num;
         int result = 0;
+        long num = 626331;
+        long lNum = num;
 
         while(cnt<=500) {
             if(lNum == 1) break;
