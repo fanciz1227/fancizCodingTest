@@ -510,4 +510,48 @@ public class LevelOneTest {
 
         assertThat(answer, is(result));
     }
+
+    /**
+     * 어떤 정수들이 있습니다. 이 정수들의 절댓값을 차례대로 담은 정수 배열 absolutes와 이 정수들의 부호를 차례대로 담은 불리언 배열 signs가 매개변수로 주어집니다.
+     * 실제 정수들의 합을 구하여 return 하도록 solution 함수를 완성해주세요.
+     */
+    @Test
+    public void 음양더하기() {
+        final int answer = 9;
+        boolean[] signs = {true, false, true};
+        int[] absolutes = {4,7,12};
+        int sum = 0;
+
+        for(int i=0; i<signs.length; i++) {
+            sum += absolutes[i] * (signs[i] ? 1 : -1);
+        }
+
+        assertThat(answer, is(sum));
+    }
+
+    /**
+     * 두 수를 입력받아 두 수의 최대공약수와 최소공배수를 반환하는 함수, solution을 완성해 보세요. 배열의 맨 앞에 최대공약수, 그다음 최소공배수를 넣어 반환하면 됩니다.
+     * 예를 들어 두 수 3, 12의 최대공약수는 3, 최소공배수는 12이므로 solution(3, 12)는 [3, 12]를 반환해야 합니다.
+     */
+    @Test
+    public void 최대공약수와최대공배수() {
+        final int[] answer = {3,12};
+        int[] result = new int[2];
+        int n = 3;
+        int m = 12;
+
+        result[0] = gcd(n, m);
+        result[1] = lcm(n, m);
+    }
+
+    //a,b를 곱한 수를 구해진 최대 공약수로 나눠주면 최소공배수가 구해진다.
+    private int lcm(int a, int b) {
+        return a * b / gcd(a, b);
+    }
+
+    //재귀함수 gcd를 통해 a 나누기 b의 값이 0이 될때까지 계속 나누어 최대 공약수를 구해준다.
+    private int gcd(int a, int b) {
+        if (a%b == 0) return b;
+        return gcd(b, a % b);
+    }
 }
