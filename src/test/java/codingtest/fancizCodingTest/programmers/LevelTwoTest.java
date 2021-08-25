@@ -40,16 +40,14 @@ public class LevelTwoTest {
         assertThat(answer, is(lcmNum));
     }
 
-    //a,b를 곱한 수를 구해진 최대 공약수로 나눠주면 최대공배수가 구해진다.
+    //a,b를 곱한 수를 구해진 최대 공약수로 나눠주면 최소공배수가 구해진다.
     private int lcm(int a, int b) {
         return a * b / gcd(a, b);
     }
 
     //재귀함수 gcd를 통해 a 나누기 b의 값이 0이 될때까지 계속 나누어 최대 공약수를 구해준다.
     private int gcd(int a, int b) {
-        if (a%b == 0) {
-            return b;
-        }
+        if (a%b == 0) return b;
         return gcd(b, a % b);
     }
 
