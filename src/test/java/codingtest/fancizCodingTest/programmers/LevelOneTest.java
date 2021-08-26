@@ -2,6 +2,7 @@ package codingtest.fancizCodingTest.programmers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -517,6 +518,9 @@ public class LevelOneTest {
      */
     @Test
     public void 음양더하기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
         final int answer = 9;
         boolean[] signs = {true, false, true};
         int[] absolutes = {4,7,12};
@@ -526,6 +530,8 @@ public class LevelOneTest {
             sum += absolutes[i] * (signs[i] ? 1 : -1);
         }
 
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint() + "result=" + sum);
         assertThat(answer, is(sum));
     }
 
@@ -535,6 +541,9 @@ public class LevelOneTest {
      */
     @Test
     public void 최대공약수와최대공배수() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
         final int[] answer = {3,12};
         int[] result = new int[2];
         int n = 3;
@@ -542,6 +551,10 @@ public class LevelOneTest {
 
         result[0] = gcd(n, m);
         result[1] = lcm(n, m);
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint() + "result=" + result);
+        assertThat(answer, is(result));
     }
 
     //a,b를 곱한 수를 구해진 최대 공약수로 나눠주면 최소공배수가 구해진다.
@@ -553,5 +566,34 @@ public class LevelOneTest {
     private int gcd(int a, int b) {
         if (a%b == 0) return b;
         return gcd(b, a % b);
+    }
+
+    /**
+     * 두 정수 left와 right가 매개변수로 주어집니다. left부터 right까지의 모든 수들 중에서, 약수의 개수가 짝수인 수는 더하고,
+     * 약수의 개수가 홀수인 수는 뺀 수를 return 하도록 solution 함수를 완성해주세요.
+     */
+    @Test
+    public void 약수의개수와덧셈() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 52;
+        int left = 24;
+        int right = 27;
+        int sum = 0;
+
+        for(int i=left; i<=right; i++) {
+            int cnt = 0;
+
+            for(int j=1; j<=i; j++) {
+                if(i % j == 0) cnt++;
+            }
+
+            sum += cnt % 2 == 0 ? i * 1 : i * -1;
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint() + "result=" + sum);
+        assertThat(answer, is(sum));
     }
 }
