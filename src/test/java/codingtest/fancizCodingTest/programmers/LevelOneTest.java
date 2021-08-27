@@ -4,10 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StopWatch;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -595,5 +592,60 @@ public class LevelOneTest {
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint() + "result=" + sum);
         assertThat(answer, is(sum));
+    }
+
+    /**
+     * 임의의 양의 정수 n에 대해, n이 어떤 양의 정수 x의 제곱인지 아닌지 판단하려 합니다.
+     * n이 양의 정수 x의 제곱이라면 x+1의 제곱을 리턴하고, n이 양의 정수 x의 제곱이 아니라면 -1을 리턴하는 함수를 완성하세요.
+     */
+    @Test
+    public void 정수제곱근판별() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final long answer = 144;
+        int n = 121;
+        long result = 0;
+        double s = Math.sqrt(n); //제곱근의 값을 구한다.
+
+        //구해진 값으로 다시 제곱했을때 값이 일치하면 +1 해준 후 제곱해서 리턴한다.
+        result = (Math.pow(s, 2) == n) ? (long) Math.pow(s+1, 2) : -1;
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint() + "result=" + result);
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * 배열 arr가 주어집니다. 배열 arr의 각 원소는 숫자 0부터 9까지로 이루어져 있습니다. 이때, 배열 arr에서 연속적으로 나타나는 숫자는 하나만 남기고 전부 제거하려고 합니다.
+     * 단, 제거된 후 남은 수들을 반환할 때는 배열 arr의 원소들의 순서를 유지해야 합니다. 예를 들면,
+     * arr = [1, 1, 3, 3, 0, 1, 1] 이면 [1, 3, 0, 1] 을 return 합니다.
+     * arr = [4, 4, 4, 3, 3] 이면 [4, 3] 을 return 합니다.
+     * 배열 arr에서 연속적으로 나타나는 숫자는 제거하고 남은 수들을 return 하는 solution 함수를 완성해 주세요.
+     */
+    @Test
+    public void 같은숫자는싫어() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int[] answer = {1,3,0,1};
+        int[] arr = {1,1,3,3,0,1,1};
+
+        List<Integer> tempList = new ArrayList<>();
+        tempList.add(arr[0]);
+
+        for(int i=1; i<arr.length; i++) {
+            if (arr[i-1] != arr[i]) tempList.add(arr[i]);
+        }
+
+        int[] result = new int[tempList.size()];
+
+        for(int j=0; j<result.length; j++) {
+            result[j] = tempList.get(j);
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint() + "result=" + result);
+        assertThat(answer, is(result));
     }
 }
