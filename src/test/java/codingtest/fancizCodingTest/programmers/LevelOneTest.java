@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest
@@ -647,5 +648,58 @@ public class LevelOneTest {
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint() + "result=" + result);
         assertThat(answer, is(result));
+    }
+
+    /**
+     * 주어진 숫자 중 3개의 수를 더했을 때 소수가 되는 경우의 개수를 구하려고 합니다. 숫자들이 들어있는 배열 nums가 매개변수로 주어질 때,
+     * nums에 있는 숫자들 중 서로 다른 3개를 골라 더했을 때 소수가 되는 경우의 개수를 return 하도록 solution 함수를 완성해주세요.
+     *
+     * 주의사항 : 같은 수의 조합이 아닐 경우 소수의 값이 동일해도 카운트 해야한다.
+     * ex) [2,4,7] = 13, [7,2,4] = 13 일 경우에는 같은 숫자의 다른 조합 소수 이기 때문에 배제한다.
+     * ex) [2,4,7] = 13, [2,3,8] = 13 이면 소수는 같지만 조합이 다른 경우이기때문에 이때는 카운트를 해줘야한다.
+     * 고로 같은 숫자의 다른 조합은 모두 배제시키고 1개라도 다른 구성이 들어가면 조합을 처리한다.
+     */
+    public static List<Integer> permutationList = new ArrayList<>();
+
+    @Test
+    public void 소수만들기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 4;
+        int[] nums = {1,2,7,6,4};
+        int result = 0;
+
+        for (int i=0; i<nums.length; i++) {
+            for (int j=i+1; j<nums.length; j++) {
+                for (int k=j+1; k<nums.length; k++) {
+                    //소수가 맞을 경우
+                    if (findPrime(nums[i] + nums[j] + nums[k])) result++;
+
+                    System.out.println(nums[i] + " " + nums[j] + " " + nums[k]);
+                }
+            }
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
+
+    //소수 찾기
+    private boolean findPrime(int num) {
+        boolean isPrime = true;
+
+        // 0,1은 소수가 아니므로 제외시킨다.
+        if(num <= 1) return isPrime = false;
+
+        for (int j=2; j*j<=num; j++) { //루트를 이용하여 타임아웃을 방지한다.
+            if(num % j == 0) {
+                isPrime = false;
+                break;
+            }
+        }
+
+        return isPrime;
     }
 }
