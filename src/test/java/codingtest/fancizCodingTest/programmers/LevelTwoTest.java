@@ -139,7 +139,6 @@ public class LevelTwoTest {
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
-
         assertThat(answer, is(decimalCnt));
     }
 
