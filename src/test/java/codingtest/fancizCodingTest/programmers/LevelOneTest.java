@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StopWatch;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest
@@ -701,5 +701,109 @@ public class LevelOneTest {
         }
 
         return isPrime;
+    }
+
+    /**
+     * 위 소수만들기 소스를 다중 for문이 아닌 재귀호출로 구현해보기
+     * 순열, 중복순열, 조합, 중복조합의 종류 중 중복조합을 이용해서 동일한 수의 다른조합을 제외한 항상 다른수의 조합만을 만든다.
+     */
+    int[] result = new int[3];
+    int count;
+
+    @Test
+    public void 소수만들기2() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 4;
+        int[] nums = {1,2,7,6,4};
+
+        //nums 배열에서 숫자 3개를 추출하기 위해 r을 3으로 준다.
+        combination(nums, nums.length, 3);
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(count));
+    }
+
+    private void combination(int[] nums, int n, int r) {
+        //r-1만큼 진행해서 0이 되면 3개를 다 추출한것으로 3개의 숫자를 더해서 소수판별을 진행한다.
+        if(r == 0) {
+            StringBuilder sb = new StringBuilder();
+            int add = 0;
+
+            for (int num : result) {
+                sb.append(num + " ");
+                add += num;
+            }
+
+            System.out.println(sb + ": " + add);
+            if(findPrime(add)) count++;
+            return;
+        } else if(n < r) {
+            return;
+        } else {
+            result[r-1] = nums[n-1];
+            combination(nums, n-1, r-1); //현재 아이템을 선택한 경우에는 r-1하여 추출을 진행하고 0까지 차례대로 추출한다.
+            combination(nums, n-1, r); //현재 아이템을 선택하지 않았을때는 r을 유지하여 다음 아이템을 선택하게 한다.
+        }
+    }
+
+    /**
+     * 어떤 문장의 각 알파벳을 일정한 거리만큼 밀어서 다른 알파벳으로 바꾸는 암호화 방식을 시저 암호라고 합니다. 예를 들어 "AB"는 1만큼 밀면 "BC"가 되고, 3만큼 밀면 "DE"가 됩니다.
+     * "z"는 1만큼 밀면 "a"가 됩니다. 문자열 s와 거리 n을 입력받아 s를 n만큼 민 암호문을 만드는 함수, solution을 완성해 보세요.
+     */
+    @Test
+    public void 시저암호() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final String answer = "e F d";
+        String s = "a B z";
+        int n = 4;
+
+        //기존에 ASCII 코드를 활용한 코드를 짰으나 넘 지저분하고 보기 힘들었다.
+        //로직이 복잡하진 않아 속도는 나쁘지 않았으나 코드가 깔끔하고 좋다는 느낌은 없었다.
+        /*String[] sArr = s.split("");
+        StringBuilder sb = new StringBuilder();
+
+        for (String ss : sArr) {
+            byte[] bytes = ss.getBytes(StandardCharsets.US_ASCII);
+
+            if (bytes[0] >= 65 && bytes[0] <= 90) { //대문자일때
+                int upperCase = bytes[0];
+                upperCase += n;
+                if(upperCase > 90) upperCase = 64 + (upperCase - 90);
+                sb.append((char) upperCase);
+            } else if (bytes[0] >= 97 && bytes[0] <= 122) { //소문자일때
+                int lowerCase = bytes[0];
+                lowerCase += n;
+                if(lowerCase > 122) lowerCase = 96 + (lowerCase - 122);
+                sb.append((char) lowerCase);
+            } else if (bytes[0] == 32) {
+                sb.append(" ");
+            }
+        }*/
+
+        //스트림을 활용한 데이터 활용이 있어서 가져와봤다.
+        //스트림은 느리다는 편견이 있었는데 기존게 106000ns 스트림이 72500ns로 속도도 더 빨랐다..
+        String result = s.chars().map(c -> {
+                    int _n = n % 26;
+
+                    if (c >= 'a' && c <= 'z') {
+                        return 'a' + (c - 'a' + _n) % 26;
+                    } else if (c >= 'A' && c <= 'Z') {
+                        return 'A' + (c - 'A' + _n) % 26;
+                    } else {
+                        return c;
+                    }
+                })
+                .mapToObj(c -> String.valueOf((char)c))
+                .reduce((a, b) -> a + b)
+                .orElse("");
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
     }
 }
