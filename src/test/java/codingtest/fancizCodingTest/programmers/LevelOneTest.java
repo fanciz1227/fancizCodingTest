@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StopWatch;
 
-import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -801,6 +802,32 @@ public class LevelOneTest {
                 .mapToObj(c -> String.valueOf((char)c))
                 .reduce((a, b) -> a + b)
                 .orElse("");
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * 2016년 1월 1일은 금요일입니다. 2016년 a월 b일은 무슨 요일일까요? 두 수 a ,b를 입력받아 2016년 a월 b일이 무슨 요일인지 리턴하는 함수, solution을 완성하세요.
+     * 요일의 이름은 일요일부터 토요일까지 각각 SUN,MON,TUE,WED,THU,FRI,SAT 입니다.
+     * 예를 들어 a=5, b=24라면 5월 24일은 화요일이므로 문자열 "TUE"를 반환하세요.
+     */
+    @Test
+    public void 이천십육년() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final String answer = "TUE";
+        int a = 5;
+        int b = 24;
+
+        //LocalDate의 내장함수를 이용하면 간단하게 출력이 가능하다.
+        //getDisplayName에는 날짜의 출력 옵션이 다양해서 출력해야하는 영문 요일의 3글자를 subString을 이용하지 않고도 세팅이 가능했다.
+        //프로그래머스의 다른 문제풀이들을 봤을때 직접 월의 일수를 세팅하여 week로 나눠준 값으로 요일을 판단하는 형태의 코드들이 많았다.
+        //코테를 하며 느끼는거지만 과연.. 순수 알고리즘을 구현하고 내용을 파악하기 위해 라이브러리 사용을 자제해야하는지 라이브러리를 사용한다면 어디까지 활용해야하는지.. 가끔 딜레마가 온다.
+        //라이브러리의 도움없이 순수하게 알고리즘을 구현해보고 그 이후에 리팩토링시에 라이브러리를 도입해서 더 간결한 코드를 짤 수 있는 노력을 해보자.
+        String result = LocalDate.of(2016, a, b).getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US).toUpperCase();
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
