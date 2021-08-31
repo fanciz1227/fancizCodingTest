@@ -833,4 +833,84 @@ public class LevelOneTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
     }
+
+    /**
+     * 단어 s의 가운데 글자를 반환하는 함수, solution을 만들어 보세요. 단어의 길이가 짝수라면 가운데 두글자를 반환하면 됩니다.
+     */
+    @Test
+    public void 가운데글자가져오기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final String answer = "c";
+        String s = "abcde";
+
+        //기존의 if처리를 삼항연산자로 바꿨을때 가독성은 어느게 더 편한가
+        /*if(s.length() % 2 == 0) {
+            result = s.substring(mok-1, mok+1);
+        } else {
+            result = s.substring(mok, mok+1);
+        }
+
+        //length로 짝수 홀수일때를 계산했는데 역시 숫자에 강하면 굳이 구할 필요없이 한방에 substring으로 구현이 가능하다
+        int mok = s.length() / 2;
+        String result = s.length() % 2 == 0 ? s.substring(mok-1, mok+1) : s.substring(mok, mok+1);
+         */
+
+        String result = s.substring((s.length()-1) / 2, s.length()/2 + 1);
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * 수많은 마라톤 선수들이 마라톤에 참여하였습니다. 단 한 명의 선수를 제외하고는 모든 선수가 마라톤을 완주하였습니다.
+     * 마라톤에 참여한 선수들의 이름이 담긴 배열 participant와 완주한 선수들의 이름이 담긴 배열 completion이 주어질 때, 완주하지 못한 선수의 이름을 return 하도록 solution 함수를 작성해주세요.
+     * 마라톤 경기에 참여한 선수의 수는 1명 이상 100,000명 이하입니다.
+     * completion의 길이는 participant의 길이보다 1 작습니다.
+     * 참가자의 이름은 1개 이상 20개 이하의 알파벳 소문자로 이루어져 있습니다.
+     * 참가자 중에는 동명이인이 있을 수 있습니다.
+     */
+    @Test
+    public void 완주하지_못한_선수(){
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final String answer = "mislav";
+        String result = "";
+        String[] participant = {"mislav", "stanko", "mislav", "ana"};
+        String[] completion = {"stanko", "ana", "mislav"};
+
+        HashMap<String, Integer> userMap = new HashMap<>();
+
+        for(String user : participant) {
+            //hash map의 getOrDefault를 이용하여 중복체크를 해준다.
+            //getOrDefault(key, defaultValue) : map에서 찾는 Key가 없다면 defaultValue를 리턴함
+            //해당로직에서 처음들어오는 값은 deafult값 0에다가 1을 더한 0+1 상태로 1로 기록되고 중복이면 1을 가져와서 1+1로 리턴해주기때문에 숫자가 늘어나게 된다.
+            //따라서 동일한 이름 즉 동명이인은 count가 증가하게되어 동명이인 만큼의 count 갯수가 value로 반영된다.
+            userMap.put(user, userMap.getOrDefault(user, 0) + 1);
+        }
+
+        for(String comp : completion) {
+            //완주자 리스트를 통해 완주한 사람은 hash map의 key값을 -1 해서 완주한 선수를 체크해준다.
+            //참여자 리스트에서 완주자 리스트와 비교해서 -1을 체크 해주면 value값은 0으로 기록된다.
+            userMap.put(comp, userMap.get(comp) - 1);
+        }
+
+        for (Map.Entry<String, Integer> entry : userMap.entrySet()) {
+            //따라서 value가 0보다 크면 동명이인처리가 되어있기 때문에 완주자 리스트에서 동명이인 만큼 동일한 count를 주지 않으면 완주 여부를 구분해준다.
+            //hash map의 경우에는 Entry라는 객체를 이용해 key와 value를 지정해주는데
+            //userMap.get()을 하게 되면 Set과 관계 없이 다시 hash map으로 가서 해당 key가 가진 value를 전부 탐색하는 경우가 발생하기 때문에 불필요한 search가 발생한다.
+            //따라서 Entry 객제 자체를 set으로 가져와서 해당 Entry에 저장된 값만 getValue로 찾으면 불필요한 탐색을 방지할 수 있다.
+            if (entry.getValue() > 0) {
+                result = entry.getKey();
+                break;
+            }
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
 }
