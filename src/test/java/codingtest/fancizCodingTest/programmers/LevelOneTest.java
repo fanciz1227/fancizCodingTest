@@ -884,7 +884,7 @@ public class LevelOneTest {
 
         HashMap<String, Integer> userMap = new HashMap<>();
 
-        for(String user : participant) {
+        for (String user : participant) {
             //hash map의 getOrDefault를 이용하여 중복체크를 해준다.
             //getOrDefault(key, defaultValue) : map에서 찾는 Key가 없다면 defaultValue를 리턴함
             //해당로직에서 처음들어오는 값은 deafult값 0에다가 1을 더한 0+1 상태로 1로 기록되고 중복이면 1을 가져와서 1+1로 리턴해주기때문에 숫자가 늘어나게 된다.
@@ -892,7 +892,7 @@ public class LevelOneTest {
             userMap.put(user, userMap.getOrDefault(user, 0) + 1);
         }
 
-        for(String comp : completion) {
+        for (String comp : completion) {
             //완주자 리스트를 통해 완주한 사람은 hash map의 key값을 -1 해서 완주한 선수를 체크해준다.
             //참여자 리스트에서 완주자 리스트와 비교해서 -1을 체크 해주면 value값은 0으로 기록된다.
             userMap.put(comp, userMap.get(comp) - 1);
@@ -912,5 +912,109 @@ public class LevelOneTest {
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
+    }
+
+    /**
+     * array의 각 element 중 divisor로 나누어 떨어지는 값을 오름차순으로 정렬한 배열을 반환하는 함수, solution을 작성해주세요.
+     * divisor로 나누어 떨어지는 element가 하나도 없다면 배열에 -1을 담아 반환하세요.
+     */
+    @Test
+    public void 나누어_떨어지는_숫자_배열() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int[] answer = {1, 2, 3, 36};
+        int divisor = 1;
+        int[] arr = {2, 36, 1, 3};
+
+        List<Integer> list = new ArrayList<>();
+
+        for(int no : arr) {
+            if(no % divisor == 0) list.add(no);
+        }
+
+        Collections.sort(list);
+        int[] result = new int[list.size() == 0 ? 1 : list.size()];
+
+        if(list.size() == 0) {
+            result[0] = -1;
+        } else {
+            for(int i=0; i<list.size(); i++) {
+                result[i] = list.get(i);
+            }
+        }
+
+        /*
+        //stream을 통한 처리 위에 긴 코드들이 단 3줄만에 완성이 된다.
+        int[] answer2 = Arrays.stream(arr).filter(n -> n % divisor == 0).toArray(); //stream을 통해 filter로 나누어 떨어지는 숫자만 모아서 toArray로 모아준다.
+        if(answer2.length == 0) answer2 = new int[] {-1}; //나누어 떨어지는 숫자가 하나도 없을때는 new 연산자로 -1을 넣고 새로 생성한다.
+        Arrays.sort(answer2); //생성된 숫자 배열을 sort로 정렬한다.
+        */
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * 점심시간에 도둑이 들어, 일부 학생이 체육복을 도난당했습니다. 다행히 여벌 체육복이 있는 학생이 이들에게 체육복을 빌려주려 합니다.
+     * 학생들의 번호는 체격 순으로 매겨져 있어, 바로 앞번호의 학생이나 바로 뒷번호의 학생에게만 체육복을 빌려줄 수 있습니다.
+     * 예를 들어, 4번 학생은 3번 학생이나 5번 학생에게만 체육복을 빌려줄 수 있습니다. 체육복이 없으면 수업을 들을 수 없기 때문에 체육복을 적절히 빌려 최대한 많은 학생이 체육수업을 들어야 합니다.
+     * 전체 학생의 수 n, 체육복을 도난당한 학생들의 번호가 담긴 배열 lost, 여벌의 체육복을 가져온 학생들의 번호가 담긴 배열 reserve가 매개변수로 주어질 때, 체육수업을 들을 수 있는 학생의 최댓값을 return 하도록 solution 함수를 작성해주세요.
+     */
+    @Test
+    public void 체육복() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 7;
+        int n = 7;
+        int[] lost = {2,4,5,6,7};
+        int[] reserve = {1,3,4,5,6,7};
+        int spare = 0;
+        int result = 0;
+        int[] reArr = new int[2];
+
+        Arrays.sort(lost);
+        Arrays.sort(reserve);
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        for (int re : reserve) {
+            map.put(re, map.getOrDefault(re, 0) + 2);
+        }
+
+        for (int lo : lost) {
+            int loNum = Optional.ofNullable(map.get(lo)).orElse(0);
+            map.put(lo, loNum == 0 ? 0 : loNum - 1);
+        }
+
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + "," + entry.getValue());
+        }
+
+        System.out.println();
+
+        /*for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            n -= 1;
+
+            if (entry.getValue() > 1) {
+                spare += 1;
+                map.put(entry.getKey(), map.get(entry.getKey()) - spare);
+                reArr[0] = entry.getKey() - 1;
+                reArr[1] = entry.getKey() + 1;
+            } else if (entry.getValue() == 0 && (entry.getKey() == reArr[0] || entry.getKey() == reArr[1])) {
+                map.put(entry.getKey(), map.get(entry.getKey()) + spare);
+                spare = 0;
+            }
+        }
+
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + "," + entry.getValue());
+            if(entry.getValue() > 0) result++;
+        }*/
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(n + result));
     }
 }
