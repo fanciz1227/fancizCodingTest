@@ -967,54 +967,101 @@ public class LevelOneTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final int answer = 7;
-        int n = 7;
-        int[] lost = {2,4,5,6,7};
-        int[] reserve = {1,3,4,5,6,7};
-        int spare = 0;
+        final int answer = 4;
+        int n = 5;
+        int[] lost = {2,4};
+        int[] reserve = {3};
         int result = 0;
-        int[] reArr = new int[2];
 
+        //정렬이 안된 상태이기 때문에 선정렬을 해준다.
         Arrays.sort(lost);
         Arrays.sort(reserve);
         HashMap<Integer, Integer> map = new HashMap<>();
 
         for (int re : reserve) {
-            map.put(re, map.getOrDefault(re, 0) + 2);
+            map.put(re, map.getOrDefault(re, 0) + 2); //여분 체육복을 가진 사람을 먼저 세팅한다.
         }
 
         for (int lo : lost) {
-            int loNum = Optional.ofNullable(map.get(lo)).orElse(0);
-            map.put(lo, loNum == 0 ? 0 : loNum - 1);
+            int loNum = Optional.ofNullable(map.get(lo)).orElse(0); //여분 체육복이 아예 없고 잃어버린 상태이면 0으로 세팅하고
+            map.put(lo, loNum == 0 ? 0 : loNum - 1); //여분 체육복을 가지고 있던 사람 중 한번 잃어버린 사람은 기존 값 (2개)에서 -1을 해준다. 따라서 가지고 있는 체육복은 1개가 되어 나눠줄 수 없게 된다.
         }
 
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            System.out.println(entry.getKey() + "," + entry.getValue());
+            System.out.println(entry.getKey() + "," + entry.getValue()); //기초 데이터 세팅한게 잘 정리되었는지 출력해본다.
         }
-
         System.out.println();
 
-        /*for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            n -= 1;
-
-            if (entry.getValue() > 1) {
-                spare += 1;
-                map.put(entry.getKey(), map.get(entry.getKey()) - spare);
-                reArr[0] = entry.getKey() - 1;
-                reArr[1] = entry.getKey() + 1;
-            } else if (entry.getValue() == 0 && (entry.getKey() == reArr[0] || entry.getKey() == reArr[1])) {
-                map.put(entry.getKey(), map.get(entry.getKey()) + spare);
-                spare = 0;
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) { //정리된 hash map에서 차례대로 데이터를 꺼내서 처리해준다.
+            if(entry.getValue() > 1) { //가지고 있는 여벌 체육복이 1개 이상일때 즉 2개를 가지고 있어야 나눠 줄 수 있게 한다.
+                //여분 체육복은 2개라고 가정하고 앞번호나 뒤번호에 한번 나눠주면 그 이후에는 더 이상 나눠줄 수 없다.
+                if(map.get(entry.getKey()-1) != null && map.get(entry.getKey()-1) < 1) { //앞의번호가 있으면서 체육복이 0개이면 처리해준다.
+                    map.put(entry.getKey(), map.get(entry.getKey()) - 1); //2개에서 한개를 나눠줘야해서 -1 처리한다.
+                    map.put(entry.getKey()-1, map.get(entry.getKey()-1) + 1); //0개에서 한개를 받아 +1 처리한다.
+                } else if(map.get(entry.getKey()+1) != null && map.get(entry.getKey()+1) < 1) { //뒤의번호가 있으면서 체육복이 0개이면 처리해준다.
+                    map.put(entry.getKey(), map.get(entry.getKey()) - 1); //2개에서 한개를 나눠줘야해서 -1 처리한다.
+                    map.put(entry.getKey()+1, map.get(entry.getKey()+1) + 1); //0개에서 한개를 받아 +1 처리한다.
+                }
             }
         }
 
+        //체육복을 나눠주는 작업까지 완료된 hash map을 돌면서 체육복이 0개 이상인 하나라도 있는 상태이면 count해준다.
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            //전체인원 중 정렬된 hash map 데이터는 체육복 갯수 처리가 된 상태이기 때문에 인원에서 -1을 해서 처리해준다.
+            //-1 되지 않고 남은 인원은 체육복이 있다고 간주한다.
+            //n이 5개이고 데이터 처리된 hash map이 데이터가 3개이면 남은 2명은 이미 체육복이 있게 된다.
+            n -= 1;
+            if(entry.getValue() > 0) result++; //체육복이 0개 이상인 하나라도 있는 데이터는 카운트 해준다.
             System.out.println(entry.getKey() + "," + entry.getValue());
-            if(entry.getValue() > 0) result++;
-        }*/
+        }
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(n + result));
+    }
+
+    /**
+     * 문자열로 구성된 리스트 strings와, 정수 n이 주어졌을 때, 각 문자열의 인덱스 n번째 글자를 기준으로 오름차순 정렬하려 합니다.
+     * 예를 들어 strings가 ["sun", "bed", "car"]이고 n이 1이면 각 단어의 인덱스 1의 문자 "u", "e", "a"로 strings를 정렬합니다.
+     * strings는 길이 1 이상, 50이하인 배열입니다.
+     * strings의 원소는 소문자 알파벳으로 이루어져 있습니다.
+     * strings의 원소는 길이 1 이상, 100이하인 문자열입니다.
+     * 모든 strings의 원소의 길이는 n보다 큽니다.
+     * 인덱스 1의 문자가 같은 문자열이 여럿 일 경우, 사전순으로 앞선 문자열이 앞쪽에 위치합니다.
+     */
+    @Test
+    public void 문자열_내_마음대로_정렬하기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final String[] answer = {"abcd", "abce", "cdx"};
+        String[] strings = {"abce", "abcd", "cdx"};
+        String[] result = new String[strings.length];
+        int n = 2;
+
+        ArrayList<String> list = new ArrayList<>();
+
+        //기준이 되는 알파벳을 단어앞에 붙여서 리스트에 추가해준다.
+        //이렇게 처리했을 경우엔 알파벳이 아무리 중복값이 생긴다해도 c+문자 로 저장되기 때문에 정렬하는데 아무런 문제가 생기지 않는다.
+        for (int i = 0; i < strings.length; i++) {
+            list.add(strings[i].charAt(n) + strings[i]);
+        }
+
+        //알파벳 + 문자 값을 정렬해준다.
+        //ex) cabce, cabcd, xcdx -> 이런 경우 결국 cabc는 같지만 사전상으로는 d가 앞서기 때문에 cabcd, cabce, xcdx 순으로 정렬이 완료된다.
+        //그러면 알파벳이 앞에 붙어있기때문에 1차 조건인 알파벳 순으로 정렬된 후 string 값을 붙였기 때문에 그 이후 정렬에서 다시 오름차순으로 또 정렬이 되기 떄문에 2차 조건까지 만족할 수 있다.
+        //생각을 완전 잘못했다.. hash map으로 정렬을 해보려다 중복값을 허용하지 않아 실패했는데 알파벳과 문자를 따로 정렬해야한다는 압박감에 속아서 제대로 문제 파악을 못했다..
+        //확실히 알고리즘 문제는 문제를 정확하게 파악하는게 굉장히 중요한듯 하다
+        Collections.sort(list);
+
+        //정렬이 완료된 리스트에서 앞에 붙은 알파벳만 제거 해주면 우리가 원하는 알파벳 정렬 후 문자로 다시 정렬된 값을 얻을 수 있다.
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i));
+            result[i] = list.get(i).substring(1);
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
     }
 }
