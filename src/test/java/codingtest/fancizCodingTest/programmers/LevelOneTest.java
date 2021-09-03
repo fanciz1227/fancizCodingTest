@@ -1064,4 +1064,85 @@ public class LevelOneTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
     }
+
+    /**
+     * 새로 생긴 놀이기구는 인기가 매우 많아 줄이 끊이질 않습니다. 이 놀이기구의 원래 이용료는 price원 인데, 놀이기구를 N 번 째 이용한다면 원래 이용료의 N배를 받기로 하였습니다.
+     * 즉, 처음 이용료가 100이었다면 2번째에는 200, 3번째에는 300으로 요금이 인상됩니다.
+     * 놀이기구를 count번 타게 되면 현재 자신이 가지고 있는 금액에서 얼마가 모자라는지를 return 하도록 solution 함수를 완성하세요.
+     * 단, 금액이 부족하지 않으면 0을 return 하세요.
+     */
+    @Test
+    public void 부족한_금액_계산하기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final long answer = 10;
+        int price = 3;
+        int money = 20;
+        int count = 4;
+        long rPrice = 0;
+
+        for(int i=1; i<=count; i++) {
+            rPrice += (price * i);
+        }
+
+        long result = money > rPrice ? 0 : (money - rPrice) * -1;
+
+        //등차수열의 합을 이용해 이용료를 계산하고 금액이 부족하지 않은지 판단을 위해 math max를 사용해서 한줄로 풀은 답안이다.
+        //수학을 잘해야하나 싶다.. ㅠ
+        //return Math.max(price * (count * (count + 1) / 2) - money, 0);
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * 자연수 n이 매개변수로 주어집니다. n을 3진법 상에서 앞뒤로 뒤집은 후, 이를 다시 10진법으로 표현한 수를 return 하도록 solution 함수를 완성해주세요.
+     */
+    @Test
+    public void 삼진법_뒤집기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 229;
+        int n = 125;
+        int result = 0;
+        StringBuilder sb = new StringBuilder();
+
+        //3진법 변환을 위해 3으로 나눠서 몫과 나머지를 구한다.
+        //3진법은 3으로 나눴을때 10이상의 크기가 나오지 않아서 3으로 나눈 나머지를 계속 넣어준다.
+        //결과는 22111로 뒤집힌 결과가 나온다.
+        //소인수분해의 형태로 나누기 때문에 22111이 나오고 우리가 원하는 원래의 3진수는 이 형태에서 reverse를 해서 11122로 만들어줘야 맞다.
+        while (n > 0) {
+            sb.append(n % 3);
+            n /= 3;
+        }
+
+        //125를 3진수로 바꾸면 11122가 나온다. 이숫자를 다시 10진수로 바꾸면 아래와 같이 수식을 이용해 바꿀 수 있다.
+        //  1  -  1  -  1  -  2  -  2
+        // 3(4)  3(3)  3(2)  3(1)  3(0)
+        //  81    27    9     6     2
+        //제곱근은 증가하면서 각 위치에 맞는 3진수를 곱한 숫자를 모두 더하면 10진수로 변환된다.
+
+        //하지만 우리는 뒤집힌 22111의 값을 구해야한다. 따라서 아래와 같이 진행해야한다.
+        //  2  -  2  -  1  -  1  -  1
+        // 3(4)  3(3)  3(2)  3(1)  3(0)
+        // 162    54    9     3     1
+
+        //여기서 아이러니하게도? for문을 순차적으로 돌리면서 i를 0부터 증가시켜서 4까지 호출하기 위해서는 뒤집힌 상태의 3진수가 아닌 원래의 3진수를 그대로 호출해줘야한다.
+        //자세한건 위 표를 보고 참고하면 될것같다.
+        char[] arr = sb.reverse().toString().toCharArray();
+
+        //여기서 우리는 11122의 뒤집힌 상태인 22111의 값을 구해야하는데 for문의 특성상 그대로 돌리면 반대의 값이 나오기 때문에
+        //22111인 값을 다시 11122로 돌려서 순차대로 for문을 돌려줘야만 뒤집힌 22111 3진수의 10진수 변환 값이 제대로 나오게 된다.
+        for(int i=0; i<arr.length; i++) {
+            //3진법 -> 10진법을 하기 위해선 3의 제곱근에다 3진법 숫자를 곱한 모든 수를 더하면 10진법이 나온다.
+            result += Character.getNumericValue(arr[i]) * (int) Math.pow(3, i);
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
 }
