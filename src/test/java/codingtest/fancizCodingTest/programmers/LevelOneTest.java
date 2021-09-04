@@ -1145,4 +1145,74 @@ public class LevelOneTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
     }
+
+    /**
+     * 대학 교수인 당신은, 상호평가를 통하여 학생들이 제출한 과제물에 학점을 부여하려고 합니다. 아래는 0번부터 4번까지 번호가 매겨진 5명의 학생들이 자신과 다른 학생의 과제를 평가한 점수표입니다.
+     * 위의 점수표에서, i행 j열의 값은 i번 학생이 평가한 j번 학생의 과제 점수입니다.
+     * 0번 학생이 평가한 점수는 0번 행에담긴 [100, 90, 98, 88, 65]입니다.
+     * 0번 학생은 자기 자신에게 100점, 1번 학생에게 90점, 2번 학생에게 98점, 3번 학생에게 88점, 4번 학생에게 65점을 부여했습니다.
+     * 2번 학생이 평가한 점수는 2번 행에담긴 [47, 88, 95, 80, 67]입니다.
+     * 2번 학생은 0번 학생에게 47점, 1번 학생에게 88점, 자기 자신에게 95점, 3번 학생에게 80점, 4번 학생에게 67점을 부여했습니다.
+     * 당신은 각 학생들이 받은 점수의 평균을 구하여, 기준에 따라 학점을 부여하려고 합니다.
+     * 만약, 학생들이 자기 자신을 평가한 점수가 유일한 최고점 또는 유일한 최저점이라면 그 점수는 제외하고 평균을 구합니다.
+     * 0번 학생이 받은 점수는 0번 열에 담긴 [100, 50, 47, 61, 24]입니다. 자기 자신을 평가한 100점은 자신이 받은 점수 중에서 유일한 최고점이므로, 평균을 구할 때 제외합니다.
+     * 0번 학생의 평균 점수는 (50+47+61+24) / 4 = 45.5입니다.
+     * 4번 학생이 받은 점수는 4번 열에 담긴 [65, 77, 67, 65, 65]입니다. 자기 자신을 평가한 65점은 자신이 받은 점수 중에서 최저점이지만 같은 점수가 2개 더 있으므로, 유일한 최저점이 아닙니다. 따라서, 평균을 구할 때 제외하지 않습니다.
+     * 4번 학생의 평균 점수는 (65+77+67+65+65) / 5 = 67.8입니다.
+     * 제외할 점수는 제외하고 평균을 구한 후, 아래 기준에 따라 학점을 부여합니다.
+     */
+    @Test
+    public void 상호평가() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final String answer = "FBABD";
+        int[][] scores = {{100,90,98,88,65}, {50,45,99,85,77}, {47,88,95,80,67}, {61,57,100,80,65}, {24,90,94,75,65}};
+        StringBuilder sb = new StringBuilder();
+
+        for (int i=0; i<scores[0].length; i++) {
+            int sum = 0;
+            int maxCnt = 0;
+            int minCnt = 0;
+            int selfScore = scores[i][i];
+            int avgRow = scores[0].length;
+
+            for (int j=0; j<scores[0].length; j++) {
+                if(selfScore >= scores[j][i]) maxCnt += 1; //본인의 점수를 돌렸을때 같거나 큰 점수를 비교하여 count 해준다. 유일하다면 유일한 최고점이기때문에 maxCnt가 5가 나온다.
+                if(selfScore <= scores[j][i]) minCnt += 1; //위와 같은 로직으로 최저점을 count 해준다. 유일하다면 minCnt가 5가 나온다.
+
+                sum += scores[j][i];
+            }
+
+            //for문을 통해 본인의 점수가 유일한 최고점, 유일한 최저점일때만 합계에서 제외를 해야한다.
+            //여기서 포인트는 '유일한'이다 본인의 점수가 최고점이나 최저점인데 동일한 점수를 다른사람에게서 받았다면 유일하지 않기 때문에 합계에서 제외되지 않는다.
+            //위 maxCnt와 minCnt를 구했을때 유일한 최고점은 maxCnt=5, minCnt=1 일때이며, 유일한 최저점은 maxCnt=1, minCnt=5 일때이다.
+            //그 외에 케이스는 최고점이나 최저점이 동시에 여러개 존재하는 경우로서 유일하지 않기 때문에 합계에 포함하여 계산을 해주면 된다.
+            if((maxCnt == scores[0].length && minCnt == 1) || (maxCnt == 1 && minCnt == scores[0].length)) {
+                sum -= selfScore;
+                avgRow = scores[0].length-1;
+            }
+
+            double avg = (double) sum / avgRow;
+
+            if (avg >= 90) {
+                sb.append("A");
+            } else if (avg >= 80 && avg < 90) {
+                sb.append("B");
+            } else if (avg >= 70 && avg < 80) {
+                sb.append("C");
+            } else if (avg >= 50 && avg < 70) {
+                sb.append("D");
+            } else if (avg < 50) {
+                sb.append("F");
+            }
+
+            //결과 출력 예시
+            System.out.println("no" + i + ":" + sum + ", maxCnt:" + maxCnt + ", minCnt:" + minCnt + ", avg:" + avg);
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(sb.toString()));
+    }
 }
