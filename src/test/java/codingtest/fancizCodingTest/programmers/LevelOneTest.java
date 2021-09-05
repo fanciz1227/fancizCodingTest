@@ -1239,4 +1239,118 @@ public class LevelOneTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
     }
+
+    /**
+     * S사에서는 각 부서에 필요한 물품을 지원해 주기 위해 부서별로 물품을 구매하는데 필요한 금액을 조사했습니다. 그러나, 전체 예산이 정해져 있기 때문에 모든 부서의 물품을 구매해 줄 수는 없습니다. 그래서 최대한 많은 부서의 물품을 구매해 줄 수 있도록 하려고 합니다.
+     * 물품을 구매해 줄 때는 각 부서가 신청한 금액만큼을 모두 지원해 줘야 합니다. 예를 들어 1,000원을 신청한 부서에는 정확히 1,000원을 지원해야 하며, 1,000원보다 적은 금액을 지원해 줄 수는 없습니다.
+     * 부서별로 신청한 금액이 들어있는 배열 d와 예산 budget이 매개변수로 주어질 때, 최대 몇 개의 부서에 물품을 지원할 수 있는지 return 하도록 solution 함수를 완성해주세요.
+     */
+
+    @Test
+    public void 예산() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 3;
+        int[] d = {1,3,2,5,4};
+        int result = 0;
+        int budget = 9;
+
+        //sort가 핵심이다. 문제의 함정이 있는 단순히 문제를 처음 봤을때는 순열을 이용해서 해결해야하나 했는데 자세히 살펴보면 꼭 예산을 전체를 다 써야하지 않는다.
+        //예산에 제일 가까운 부서의 합계를 구해내면 되기 떄문에 가장 많이 부서의 합을 구해낼 수 있고 예산의 근사치 값을 얻어내려면
+        //오름차순 sort를 한 다음에 하나씩 더해가면 가장 많은 숫자의 부서를 구해낼 수 있는것이다.
+        Arrays.sort(d);
+
+        for (int no : d) {
+            if(no > budget) break;
+
+            budget -= no;
+            result++;
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
+
+    @Test
+    public void 직업군_추천하기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final String answer = "PORTAL";
+        String result = "";
+        String[] table = {"SI JAVA JAVASCRIPT SQL PYTHON C#",
+                "CONTENTS JAVASCRIPT JAVA PYTHON SQL C++",
+                "HARDWARE C C++ PYTHON JAVA JAVASCRIPT",
+                "PORTAL JAVA JAVASCRIPT PYTHON KOTLIN PHP",
+                "GAME C++ C# JAVASCRIPT C JAVA"};
+        String[] languages = {"JAVA", "JAVASCRIPT"};
+        int[] preference = {7,5};
+
+        HashMap<String, String[]> rankMap = new HashMap<>();
+        HashMap<String, Integer> langMap = new HashMap<>();
+        HashMap<String, Integer> resultMap = new HashMap<>();
+
+        //직업군 선호도 데이터 HashMap 데이터로 변경
+        //key : SI , value : JAVA JAVASCRIPT SQL PYTHON C#
+        for (String str : table) {
+            rankMap.put(str.substring(0, str.indexOf(" ")), str.substring(str.indexOf(" ")+1).split(" "));
+        }
+
+        //개발자 언어 선호도 HashMap
+        for (int i=0; i<languages.length; i++) {
+            langMap.put(languages[i], preference[i]);
+        }
+
+        for (Map.Entry<String, String[]> rankEntry : rankMap.entrySet()) {
+            int sum = 0;
+
+            for (Map.Entry<String, Integer> langEntry : langMap.entrySet()) {
+                int grade = 5;
+                int index = Arrays.asList(rankEntry.getValue()).indexOf(langEntry.getKey());
+                grade = index > -1 ? grade - index : 0;
+                grade *= langEntry.getValue();
+                sum += grade;
+            }
+
+            resultMap.put(rankEntry.getKey(), sum);
+        }
+
+        List<Map.Entry<String, Integer>> resultList = new ArrayList<>(resultMap.entrySet());
+        resultList.sort(Map.Entry.comparingByKey());
+        int max = 0;
+
+        for (Map.Entry<String, Integer> resultEntry : resultList) {
+            if (max < resultEntry.getValue()) {
+                max = resultEntry.getValue();
+                result = resultEntry.getKey();
+            }
+        }
+
+        /* 나는 HashMap으로 풀었는데 그냥 주어진 String을 배열로 풀어놔서 그 안에 있는 languages 배열만큼 돌려서 합을 구했다..
+        세부 로직은 indexOf를 이용해서 풀은건 비슷하게 접근했는데 굳이 HashMap을 접근안하고도 풀수있었다..
+
+        for(String str : table){
+            String[] t = str.split(" ");
+            String tname = t[0];
+            int tscore = 0;
+
+            for(int i=0;i<languages.length;i++){
+                int idx = Arrays.asList(t).indexOf(languages[i]);
+                if(idx >- 1) tscore += preference[i] * (6 - idx);
+            }
+
+            if(score == tscore && answer.compareTo(tname) > 0) answer = tname;
+            if(score<tscore){
+                score = tscore;
+                answer = tname;
+            }
+        }
+         */
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
 }
