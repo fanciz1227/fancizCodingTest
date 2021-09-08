@@ -7,6 +7,7 @@ import org.springframework.util.StopWatch;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -1389,7 +1390,7 @@ public class LevelOneTest {
         String[] result = new String[n];
 
         //정사각형 변의 길이 n만큼 반복한다.
-        for(int i=0; i<n; i++) {
+        for (int i=0; i<n; i++) {
             //arr1,arr2 배열의 요소를 변의 길이만큼 2진수로 변환
             char[] binaryArr1 = decimalToBinary(n, arr1[i]);
             char[] binaryArr2 = decimalToBinary(n, arr2[i]);
@@ -1397,7 +1398,7 @@ public class LevelOneTest {
             StringBuilder sb = new StringBuilder();
 
             //변의 길이만큼 10진수에서 2진수로 변환했기 때문에 동일하게 n만큼 반복한다.
-            for(int j=0; j<n; j++) {
+            for (int j=0; j<n; j++) {
                 //지도 1 또는 지도 2 중 어느 하나라도 벽인 부분은 전체 지도에서도 벽이다.
                 if(binaryArr1[j] == '1' || binaryArr2[j] == '1') {
                     sb.append("#");
@@ -1423,12 +1424,96 @@ public class LevelOneTest {
         //따라서 n의 길이 만큼 2진수의 길이도 맞춰줘야한다.
         //끙.. Integer.toBinaryString(33 | 56) | 연산자를 이용해서 2개의 값을 넘겨주면 우리가 구해야하는 값이 그대로 출력된다..
         //다만 Integer.toBinaryString을 이용한 2진수 변환도 결국 변의 길이만큼 자리수를 맞춰줘야해서 소인수분해로 진행했다.
-        for(int i=0; i<n; i++) {
+        for (int i=0; i<n; i++) {
             binaryStr.append(decimal % 2);
             decimal /= 2;
         }
 
         //소인수분해로 했기 때문에 결과가 뒤집힌 상태로 나오기 때문에 다시 한번 뒤집어서 정상적으로 표현해준다.
         return binaryStr.reverse().toString().toCharArray();
+    }
+
+    /**
+     * 카카오톡 게임별의 하반기 신규 서비스로 다트 게임을 출시하기로 했다. 다트 게임은 다트판에 다트를 세 차례 던져 그 점수의 합계로 실력을 겨루는 게임으로, 모두가 간단히 즐길 수 있다.
+     * 갓 입사한 무지는 코딩 실력을 인정받아 게임의 핵심 부분인 점수 계산 로직을 맡게 되었다. 다트 게임의 점수 계산 로직은 아래와 같다.
+     * 다트 게임은 총 3번의 기회로 구성된다.
+     * 각 기회마다 얻을 수 있는 점수는 0점에서 10점까지이다.
+     * 점수와 함께 Single(S), Double(D), Triple(T) 영역이 존재하고 각 영역 당첨 시 점수에서 1제곱, 2제곱, 3제곱 (점수1 , 점수2 , 점수3 )으로 계산된다.
+     * 옵션으로 스타상(*) , 아차상(#)이 존재하며 스타상(*) 당첨 시 해당 점수와 바로 전에 얻은 점수를 각 2배로 만든다. 아차상(#) 당첨 시 해당 점수는 마이너스된다.
+     * 스타상(*)은 첫 번째 기회에서도 나올 수 있다. 이 경우 첫 번째 스타상(*)의 점수만 2배가 된다. (예제 4번 참고)
+     * 스타상(*)의 효과는 다른 스타상(*)의 효과와 중첩될 수 있다. 이 경우 중첩된 스타상(*) 점수는 4배가 된다. (예제 4번 참고)
+     * 스타상(*)의 효과는 아차상(#)의 효과와 중첩될 수 있다. 이 경우 중첩된 아차상(#)의 점수는 -2배가 된다. (예제 5번 참고)
+     * Single(S), Double(D), Triple(T)은 점수마다 하나씩 존재한다.
+     * 스타상(*), 아차상(#)은 점수마다 둘 중 하나만 존재할 수 있으며, 존재하지 않을 수도 있다.
+     * 0~10의 정수와 문자 S, D, T, *, #로 구성된 문자열이 입력될 시 총점수를 반환하는 함수를 작성하라.
+     */
+    @Test
+    public void 다트게임() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 9;
+        String dartResult = "1D2S#10S";
+
+        String[] dartArr = dartResult.split("");
+        String[] prizeArr = new String[3];
+        int[] scoreArr = new int[3];
+
+        String score = "";
+        int result = 0;
+        int arrCnt = 0;
+
+        //들어온 문자열을 하나씩 분리해서 점수와 상을 분리 한다.
+        for (int i=0; i<dartArr.length; i++) {
+            if (Pattern.matches("^[0-9]*$", dartArr[i])) { //정규식을 이용해 숫자인지 체크한다.
+                //10이 들어오는 경우에는 두번 숫자가 붙어야하기 때문에 String으로 이어 붙여준 후에 사용하도록 한다.
+                score += dartArr[i];
+            } else if (Pattern.matches("^[A-Z]*$", dartArr[i])) { //정규식을 이용해 영문 대문자인지 체크한다.
+                int pow = 0;
+
+                switch (dartArr[i]) {
+                    case "S" :
+                        pow = 1;
+                        break;
+                    case "D" :
+                        pow = 2;
+                        break;
+                    case "T" :
+                        pow = 3;
+                        break;
+                    default:
+                        pow = 0;
+                        break;
+                }
+
+                //SDT에 맞는 각 제곱근을 구해서 얻은 점수에 제곱하여 점수 배열을 만들어준다.
+                scoreArr[arrCnt] = (int) Math.pow(Integer.parseInt(score), pow);
+                score = ""; //SDT가 들어오면 점수 구성이 끝났기 때문에 점수 string을 초기화 하고 arrCnt를 증가시킨다.
+                arrCnt++;
+            } else {
+                //arrCnt를 활용하여 몇번째에 붙은 스타상, 아차상인지 구분해준다. 이미 증가한 상태의 cnt여서 -1을 해줘야 정확한 위치에 반영된다.
+                prizeArr[arrCnt-1] = dartArr[i];
+            }
+        }
+
+        //for문을 돌때 scr에 미리 값을 반영해놓기 위해서 역순으로 돌렸다.
+        for (int i=scoreArr.length-1; i>=0; i--) {
+            int scr = scoreArr[i];
+
+            if (prizeArr[i] != null && "*".equals(prizeArr[i])) {
+                //스타상의 경우 현재 점수와 바로 전에 얻은 점수를 각 2배로 만들어야 하기 때문에
+                //전의 점수가 없는 scoreArr[0]을 제외하고 이전 값을 2배로 만들어서 배열에 반영한다.
+                if (i >= 1) scoreArr[i-1] *= 2;
+                scr *= 2; //스타상은 x2를 한다.
+            } else if (prizeArr[i] != null && "#".equals(prizeArr[i])){
+                scr *= -1; //아차상은 x(-1)을 한다.
+            }
+
+            result += scr;
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
     }
 }
