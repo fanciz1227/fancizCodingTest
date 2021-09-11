@@ -1634,35 +1634,42 @@ public class LevelOneTest {
         String[] head2head = {"NLWL", "WNLL", "LWNW", "WWLN"};
         ArrayList<Boxer> boxerList = new ArrayList<>();
 
-        for (int i=0; i<weights.length; i++) {
-            String[] headArr = head2head[i].split("");
+        for (int i=0; i<weights.length; i++) { //선수의 수 만큼 반복한다.
+            String[] headArr = head2head[i].split(""); //해당 선수에 대한 전적을 가져온다.
             int winCnt = 0;
             int loseCnt = 0;
+            int nCnt = 0;
             int heavyBox = 0;
 
             for (int j=0; j<headArr.length; j++) {
-
                 switch (headArr[j]) {
                     case "W" :
-                        if (weights[i] < weights[j]) heavyBox++;
-                        winCnt++;
+                        if (weights[i] < weights[j]) heavyBox++; //본인보다 무거운 상대를 이겼을때 heavyBox를 증가시킨다.
+                        winCnt++; //이겼을때 증가 한다.
                         break;
                     case "L" :
-                        loseCnt++;
+                        loseCnt++; //졌을때 증가 한다.
                         break;
                     default:
+                        nCnt++; //자기 자신의 값이거나 전적자체가 아예 없는 경우에 증가한다.
                         break;
                 }
             }
 
-            Boxer boxer = new Boxer(i+1, (double) winCnt/(winCnt+loseCnt), heavyBox);
-            boxerList.add(boxer);
+            //Boxer 객체에 선수번호, 승률, 무거운상대이긴횟수, 본인 무게 를 계산하여 생성한다.
+            Boxer boxer = new Boxer(i+1, nCnt == weights.length ? 0 : (double) winCnt/(winCnt+loseCnt), heavyBox, weights[i]);
+            boxerList.add(boxer); //생성된 객체를 list에 넣어준다.
         }
 
-        boxerList.sort(Comparator.comparing(Boxer::getWinRate).reversed()
-                .thenComparing(Boxer::getHeavyCnt).reversed()
-                .thenComparing(Boxer::getNo));
+        //list에 들어온 Boxer 객체들중에서
+        //승률 > 무거운상대이긴횟수 > 본인 무게 를 선언된 순서대로 내림차순으로 정렬하고
+        //동승률이거나 무거운상대이긴횟수가 같거나 무게마저 같게되면 번호기준을 오름차순으로 재정렬해서 보여준다.
+        boxerList.sort(Comparator.comparing(Boxer::getWinRate)
+                .thenComparing(Boxer::getHeavyCnt)
+                .thenComparing(Boxer::getWeight)
+                .thenComparing(Boxer::getNo).reversed());
 
+        //생성된 리스트에서 정렬된 순서대로 result 배열에 번호를 대입해준다.
         for (int r=0; r<boxerList.size(); r++) {
             result[r] = boxerList.get(r).getNo();
         }
@@ -1676,6 +1683,7 @@ public class LevelOneTest {
         private int no;
         private double winRate;
         private int heavyCnt;
+        private int weight;
 
         public int getNo() {
             return no;
@@ -1689,10 +1697,15 @@ public class LevelOneTest {
             return heavyCnt;
         }
 
-        Boxer(int no, double winRate, int heavyCnt) {
+        public int getWeight() {
+            return weight;
+        }
+
+        Boxer(int no, double winRate, int heavyCnt, int weight) {
             this.no = no;
             this.winRate = winRate;
             this.heavyCnt = heavyCnt;
+            this.weight = weight;
         }
     }
 }
