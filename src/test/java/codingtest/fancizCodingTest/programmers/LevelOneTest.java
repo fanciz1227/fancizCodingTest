@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StopWatch;
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -1611,5 +1612,87 @@ public class LevelOneTest {
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
+    }
+
+    /**
+     * 복서 선수들의 몸무게 weights와, 복서 선수들의 전적을 나타내는 head2head가 매개변수로 주어집니다. 복서 선수들의 번호를 다음과 같은 순서로 정렬한 후 return 하도록 solution 함수를 완성해주세요.
+     *
+     * 전체 승률이 높은 복서의 번호가 앞쪽으로 갑니다. 아직 다른 복서랑 붙어본 적이 없는 복서의 승률은 0%로 취급합니다.
+     * 승률이 동일한 복서의 번호들 중에서는 자신보다 몸무게가 무거운 복서를 이긴 횟수가 많은 복서의 번호가 앞쪽으로 갑니다.
+     * 자신보다 무거운 복서를 이긴 횟수까지 동일한 복서의 번호들 중에서는 자기 몸무게가 무거운 복서의 번호가 앞쪽으로 갑니다.
+     * 자기 몸무게까지 동일한 복서의 번호들 중에서는 작은 번호가 앞쪽으로 갑니다.
+     */
+    @Test
+    public void 복서_정렬하기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int[] answer = {3,4,1,2};
+
+        int[] weights = {50, 82, 75, 120};
+        int[] result = new int[weights.length];
+        String[] head2head = {"NLWL", "WNLL", "LWNW", "WWLN"};
+        ArrayList<Boxer> boxerList = new ArrayList<>();
+
+        for (int i=0; i<weights.length; i++) {
+            String[] headArr = head2head[i].split("");
+            int winCnt = 0;
+            int loseCnt = 0;
+            int heavyBox = 0;
+
+            for (int j=0; j<headArr.length; j++) {
+
+                switch (headArr[j]) {
+                    case "W" :
+                        if (weights[i] < weights[j]) heavyBox++;
+                        winCnt++;
+                        break;
+                    case "L" :
+                        loseCnt++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            Boxer boxer = new Boxer(i+1, (double) winCnt/(winCnt+loseCnt), heavyBox);
+            boxerList.add(boxer);
+        }
+
+        boxerList.sort(Comparator.comparing(Boxer::getWinRate).reversed()
+                .thenComparing(Boxer::getHeavyCnt).reversed()
+                .thenComparing(Boxer::getNo));
+
+        for (int r=0; r<boxerList.size(); r++) {
+            result[r] = boxerList.get(r).getNo();
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
+
+    private class Boxer {
+        private int no;
+        private double winRate;
+        private int heavyCnt;
+
+        public int getNo() {
+            return no;
+        }
+
+        public double getWinRate() {
+            return winRate;
+        }
+
+        public int getHeavyCnt() {
+            return heavyCnt;
+        }
+
+        Boxer(int no, double winRate, int heavyCnt) {
+            this.no = no;
+            this.winRate = winRate;
+            this.heavyCnt = heavyCnt;
+        }
     }
 }
