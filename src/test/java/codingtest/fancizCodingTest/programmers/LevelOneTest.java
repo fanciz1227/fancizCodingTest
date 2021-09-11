@@ -1664,6 +1664,9 @@ public class LevelOneTest {
         //list에 들어온 Boxer 객체들중에서
         //승률 > 무거운상대이긴횟수 > 본인 무게 를 선언된 순서대로 내림차순으로 정렬하고
         //동승률이거나 무거운상대이긴횟수가 같거나 무게마저 같게되면 번호기준을 오름차순으로 재정렬해서 보여준다.
+        //Comparator안에 지원하는 thenComparing를 이용하여 다중 조건 정렬을 구현했다.
+        //다른 사람들 답은 직접 Comparator를 구현했다.. 후에 다시 이 부분을 라이브러리를 이용하지 않고
+        //객체도 활용했는데 이걸 직접 구현해보거나 배열로 풀어봐야겠다..
         boxerList.sort(Comparator.comparing(Boxer::getWinRate)
                 .thenComparing(Boxer::getHeavyCnt)
                 .thenComparing(Boxer::getWeight)
