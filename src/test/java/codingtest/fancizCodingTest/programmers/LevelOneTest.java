@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StopWatch;
 
-import javax.swing.*;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -1710,5 +1709,51 @@ public class LevelOneTest {
             this.heavyCnt = heavyCnt;
             this.weight = weight;
         }
+    }
+
+    /**
+     * 가정합니다. (그림에서는 화면표시 제약으로 5칸만으로 표현하였음)
+     * 게임 화면의 격자의 상태가 담긴 2차원 배열 board와 인형을 집기 위해 크레인을 작동시킨 위치가 담긴 배열 moves가 매개변수로 주어질 때,
+     * 크레인을 모두 작동시킨 후 터트려져 사라진 인형의 개수를 return 하도록 solution 함수를 완성해주세요.
+     */
+    @Test
+    public void 크레인_인형뽑기_게임() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 4;
+        int[] moves = {1, 2, 3, 3, 2, 3, 1};
+        int[][] board = {{0, 0, 1, 0, 0}, {0, 0, 1, 0, 0}, {0, 2, 1, 0, 0}, {0, 2, 1, 0, 0}, {0, 2, 1, 0, 0}};
+        int result = 0;
+        int compareNo = 0;
+
+        Stack<Integer> stack = new Stack<>();
+        stack.push(0); //맨처음 비교대상을 위해 0으로 초기화 한 상태에서 시작한다.
+
+        //인형을 뽑는 횟수만큼 반복한다.
+        for (int move : moves) {
+            for (int i=0; i<board[move - 1].length; i++) { //board[0]의 배열 수 만큼 반복한다.
+                if (board[i][move - 1] != 0) { //board의 move-1 번째 인덱스에 있는 값을 반복해서 추출하다 0이 아닌 숫자, 즉 인형이 발견되면 뽑는다.
+                    stack.push(board[i][move - 1]); //스택에 추출된 인형 번호를 넣는다.
+                    board[i][move - 1] = 0; //추출된 인덱스는 이제 인형이 없기 때문에 0으로 초기화 해준다.
+
+                    if(compareNo == stack.peek()) { //현재 스택의 가장 마지막 값과 비교번호를 대조해서 같으면 이전 인덱스의 스택값과 현재 인덱스의 스택값이 같으므로 2개를 스택에서 제거한다.
+                        stack.pop(); //위에서 이미 push 된 상태이기 때문에 pop을 2번 호출하여 동일한 인형의 숫자를 제거 해준다.
+                        stack.pop();
+                        result += 2; //없어진 인형은 2개이므로 2를 결과값에 더해준다.
+                    }
+
+                    compareNo = stack.peek(); //인형이 발견된 순간 위의 조건들을 거쳐 가장 마지막에 남아있는 스택의 마지막 값을 가져와서 비교번호에 초기화한다.
+                    break;
+                }
+            }
+        }
+
+        //처음엔 for문으로 별도의 배열을 만들었는데 하다보니 굳이 배열을 따로 뺄 필요없이 for문 안에서 바로바로 처리가 가능했다.
+        //확실히 코딩테스트 문제들을 많이 접하다보니 어느정도 알고리즘 구현하는게 눈에 익숙해지기 시작했다.
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
     }
 }
