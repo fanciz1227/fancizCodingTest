@@ -9,6 +9,7 @@ import java.time.format.TextStyle;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -1751,6 +1752,53 @@ public class LevelOneTest {
 
         //처음엔 for문으로 별도의 배열을 만들었는데 하다보니 굳이 배열을 따로 뺄 필요없이 for문 안에서 바로바로 처리가 가능했다.
         //확실히 코딩테스트 문제들을 많이 접하다보니 어느정도 알고리즘 구현하는게 눈에 익숙해지기 시작했다.
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * 0부터 9까지의 숫자 중 일부가 들어있는 배열 numbers가 매개변수로 주어집니다.
+     * numbers에서 찾을 수 없는 0부터 9까지의 숫자를 모두 찾아 더한 수를 return 하도록 solution 함수를 완성해주세요.
+     */
+    @Test
+    public void 없는_숫자_더하기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 14;
+        int[] numbers = {1,2,3,4,6,7,8,0};
+        int result = 0;
+
+        //기본 2중 for문을 이용한 풀이다. 0부터 9까지 하나씩 찾으면서 있으면 findNo에 넣어서 더하지 않고 다음 순서로 넘어간다.
+        /*for (int i=0; i<=9; i++) {
+            int findNo = -1;
+
+            for (int j=0; j<numbers.length; j++) {
+                if (i == numbers[j]) { //i값과 배열의 값이 일치하면 findNo에 넣어주고 for문을 빠져나간다.
+                    findNo = numbers[j];
+                    break;
+                }
+            }
+
+            if(findNo < 0) result += i; //findNo가 0보다 작으면(다른 데이터가 안들어와서 -1인 상태이면) 찾지 못한것으로 판단하여 현재의 i를 result에 더한다.
+        }*/
+
+        //stream을 이용한 처리이다.
+        //데이터가 적어서 그런지 위의 2 for문보다 크게 느리지는 않지만 확실히 그냥 2중 for문보다 약간의? 딜레이가 있는듯하다.
+        /*for (int i=0; i<=9; i++) {
+            int index = i;
+            //stream에 filter를 이용하여 찾아야하는 배열 내의 value를 활용하여 현재 i의 값과 같은 값이 있으면 count가 1증가한다.
+            //따라서 0일 경우에는 없다고 판단하여 현재의 i를 result에 더한다.
+            if (Arrays.stream(numbers).filter(value -> value == index).count() == 0) result += i;
+        }*/
+
+        //IntStream을 이용해서 range의 범위까지 검색을 하는데 일반적으로 range(0, 10) 를 쓸때는 두번째 파라미터 10을 범위에 포함하지 않고 -1한 9까지기 때문에
+        //rangeClosed(0, 9)를 이용해서 정확한 범위를 한눈에 파악하기 좋게 했다.
+        //stream의 noneMatch를 이용하여 일치하지 않는 값, 즉 값이 없으면 해당 값을 sum해서 없는 값을 모두 찾아서 더한값과 같아지게 된다.
+        //위의 2중 for문, stream을 이용했을때보다 거의 10배는 느린것같다.. 물론 느려봤자 3~5ms 수준이지만 역시 stream은 대량(100만건 이상)의 데이터를 처리하는데는 제약이 생길 수 있을것같다.
+        result = IntStream.rangeClosed(0, 9).filter(i -> Arrays.stream(numbers).noneMatch(num -> i == num)).sum();
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
