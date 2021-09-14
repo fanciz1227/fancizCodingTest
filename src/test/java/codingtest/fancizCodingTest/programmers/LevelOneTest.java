@@ -1822,9 +1822,9 @@ public class LevelOneTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final String answer = "LRLLRRLLLRR";
-        String result = "";
-        int[] numbers = {7, 0, 8, 2, 8, 3, 1, 5, 7, 6, 2};
+        final String answer = "LLLLL";
+        StringBuilder sb = new StringBuilder();
+        int[] numbers = {0,0,0,0,0};
         String hand = "left";
         List<String> centerNo = new ArrayList<>();
         centerNo.add("2");
@@ -1835,37 +1835,44 @@ public class LevelOneTest {
         int leftLocate = 10;
         int rightLocate = 12;
 
+        //으음.. 코드가 총체적 난국인듯..
         for (int no : numbers) {
             switch (no) {
                 case 1 : case 4 : case 7 :
-                    result += "L";
+                    sb.append("L");
                     leftLocate = no;
                     break;
                 case 3 : case 6 : case 9 :
-                    result += "R";
+                    sb.append("R");
                     rightLocate = no;
                     break;
                 case 2 : case 5 : case 8 : case 0 :
-                    if (no == 0) no = 11;
-                    int pushLocate = centerNo.indexOf(String.valueOf(no));
+                    if (no == 0) no = 11; //123456789를 제외한 *,0,#를 구분하기 위해 10,11,12로 정의해준다. 어차피 *#값은 들어오지 않기 때문에 0일때만 처리한다.
+                    int pushLocate = centerNo.indexOf(String.valueOf(no == 11 ? 0 : no)); //이동해야하는 위치가 2,5,8,0이기 떄문에 미리 선언해둔 centerNo 리스트의 index 값을 구하는데 이때 no가 11일 경우 실제 숫자는 0이기 때문에 0으로 처리해준다.
 
-                    int leftMoveCenter = centerNo.indexOf(String.valueOf(leftLocate)) > -1 ? Math.abs((centerNo.indexOf(String.valueOf(leftLocate)) - pushLocate)) :
-                            Math.abs(centerNo.indexOf(String.valueOf(leftLocate + 1)) - pushLocate) + 1;
-                    int rightMoveCenter = centerNo.indexOf(String.valueOf(rightLocate)) > -1 ? Math.abs((centerNo.indexOf(String.valueOf(rightLocate)) - pushLocate)) :
-                            Math.abs(centerNo.indexOf(String.valueOf(rightLocate - 1)) - pushLocate) + 1;
+                    //내가 짜놓고도 뭔 코드인지 잘 모르겠다.. ㅋㅋ
+                    //너무 지저분하고 깔끔하지 않다.. 원래라면 숫자패드의 매핑주소를 만들어야하는데 어차피 1,4,7 - 3,6,9는 지정된 값이 있기때문에 이렇게 해봤는데 뭔가 더 효율적이지 않은것같다..
+                    int leftMoveCenter = centerNo.indexOf(String.valueOf(leftLocate == 11 ? 0 : leftLocate)) > -1 ? //현재 왼손위치가 centerNo = {2,5,8,0} 리스트 내에 있는지 확인한다. 여기서 왼손위치가 11이면 0으로 인지시켜준다.
+                            Math.abs((centerNo.indexOf(String.valueOf(leftLocate == 11 ? 0 : leftLocate)) - pushLocate)) : //왼손위치의 indexOf 값과 이동해야하는 indexOf 값을 빼서 양수의 형태로 바꿔주면 이동값이 나온다.
+                            Math.abs(centerNo.indexOf(String.valueOf(leftLocate + 1 == 11 ? 0 : leftLocate + 1)) - pushLocate) + 1; //현재 왼손위치가 리스트 내에 없다면 왼손은 무조건 1,4,7,*(10)에서만 +1한 값 centerNo 리스트 안에 있는 2,5,8,0(11) 으로만 움직일 수 있기 때문에 +1을 해서 확인해주고 만약 +1을 했을때 0(11) 이면 0으로 처리해서 확인해준다.
 
+                    int rightMoveCenter = centerNo.indexOf(String.valueOf(rightLocate == 11 ? 0 : rightLocate)) > -1 ? //현재 오른손위치가 centerNo = {2,5,8,0} 리스트 내에 있는지 확인한다. 여기서 오른손위치가 11이면 0으로 인지시켜준다.
+                            Math.abs((centerNo.indexOf(String.valueOf(rightLocate == 11 ? 0 : rightLocate)) - pushLocate)) : //오른손위치의 indexOf 값과 이동해야하는 indexOf 값을 빼서 양수의 형태로 바꿔주면 이동값이 나온다.
+                            Math.abs(centerNo.indexOf(String.valueOf(rightLocate - 1 == 11 ? 0 : rightLocate - 1)) - pushLocate) + 1; //현재 오른손위치가 리스트 내에 없다면 왼손은 무조건 3,6,9,#(12)에서만 -1한 값 centerNo 리스트 안에 있는 2,5,8,0(11) 으로만 움직일 수 있기 때문에 -1을 해서 확인해주고 만약 -1을 했을때 0(11) 이면 0으로 처리해서 확인해준다.
+
+                    //위에서 구한 현재 왼손,오른손 위치에서 이동해야하는 위치까지의 거리를 계산 한 값으로 더 적게 이동하는 값을 기준으로 이동하게 처리한다.
                     if (rightMoveCenter < leftMoveCenter) {
-                        result += "R";
+                        sb.append("R");
                         rightLocate = no;
                     } else if (rightMoveCenter > leftMoveCenter) {
-                        result += "L";
+                        sb.append("L");
                         leftLocate = no;
-                    } else if (rightMoveCenter == leftMoveCenter) {
+                    } else if (rightMoveCenter == leftMoveCenter) { //만약 이동거리가 같으면 주어진 주로 사용하는 손의 값(hand)를 비교하여 해당 손으로 이동하게 해준다.
                         if ("right".equals(hand)) {
-                            result += "R";
+                            sb.append("R");
                             rightLocate = no;
                         } else {
-                            result += "L";
+                            sb.append("L");
                             leftLocate = no;
                         }
                     }
@@ -1876,6 +1883,6 @@ public class LevelOneTest {
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
-        assertThat(answer, is(result));
+        assertThat(answer, is(sb.toString()));
     }
 }
