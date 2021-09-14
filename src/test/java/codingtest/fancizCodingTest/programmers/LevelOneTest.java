@@ -1804,4 +1804,78 @@ public class LevelOneTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
     }
+
+    /**
+     * 이 전화 키패드에서 왼손과 오른손의 엄지손가락만을 이용해서 숫자만을 입력하려고 합니다.
+     * 맨 처음 왼손 엄지손가락은 * 키패드에 오른손 엄지손가락은 # 키패드 위치에서 시작하며, 엄지손가락을 사용하는 규칙은 다음과 같습니다.
+     *
+     * 엄지손가락은 상하좌우 4가지 방향으로만 이동할 수 있으며 키패드 이동 한 칸은 거리로 1에 해당합니다.
+     * 왼쪽 열의 3개의 숫자 1, 4, 7을 입력할 때는 왼손 엄지손가락을 사용합니다.
+     * 오른쪽 열의 3개의 숫자 3, 6, 9를 입력할 때는 오른손 엄지손가락을 사용합니다.
+     * 가운데 열의 4개의 숫자 2, 5, 8, 0을 입력할 때는 두 엄지손가락의 현재 키패드의 위치에서 더 가까운 엄지손가락을 사용합니다.
+     * 4-1. 만약 두 엄지손가락의 거리가 같다면, 오른손잡이는 오른손 엄지손가락, 왼손잡이는 왼손 엄지손가락을 사용합니다.
+     * 순서대로 누를 번호가 담긴 배열 numbers, 왼손잡이인지 오른손잡이인 지를 나타내는 문자열 hand가 매개변수로 주어질 때,
+     * 각 번호를 누른 엄지손가락이 왼손인 지 오른손인 지를 나타내는 연속된 문자열 형태로 return 하도록 solution 함수를 완성해주세요.
+     */
+    @Test
+    public void 키패드_누르기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final String answer = "LRLLRRLLLRR";
+        String result = "";
+        int[] numbers = {7, 0, 8, 2, 8, 3, 1, 5, 7, 6, 2};
+        String hand = "left";
+        List<String> centerNo = new ArrayList<>();
+        centerNo.add("2");
+        centerNo.add("5");
+        centerNo.add("8");
+        centerNo.add("0");
+
+        int leftLocate = 10;
+        int rightLocate = 12;
+
+        for (int no : numbers) {
+            switch (no) {
+                case 1 : case 4 : case 7 :
+                    result += "L";
+                    leftLocate = no;
+                    break;
+                case 3 : case 6 : case 9 :
+                    result += "R";
+                    rightLocate = no;
+                    break;
+                case 2 : case 5 : case 8 : case 0 :
+                    if (no == 0) no = 11;
+                    int pushLocate = centerNo.indexOf(String.valueOf(no));
+
+                    int leftMoveCenter = centerNo.indexOf(String.valueOf(leftLocate)) > -1 ? Math.abs((centerNo.indexOf(String.valueOf(leftLocate)) - pushLocate)) :
+                            Math.abs(centerNo.indexOf(String.valueOf(leftLocate + 1)) - pushLocate) + 1;
+                    int rightMoveCenter = centerNo.indexOf(String.valueOf(rightLocate)) > -1 ? Math.abs((centerNo.indexOf(String.valueOf(rightLocate)) - pushLocate)) :
+                            Math.abs(centerNo.indexOf(String.valueOf(rightLocate - 1)) - pushLocate) + 1;
+
+                    if (rightMoveCenter < leftMoveCenter) {
+                        result += "R";
+                        rightLocate = no;
+                    } else if (rightMoveCenter > leftMoveCenter) {
+                        result += "L";
+                        leftLocate = no;
+                    } else if (rightMoveCenter == leftMoveCenter) {
+                        if ("right".equals(hand)) {
+                            result += "R";
+                            rightLocate = no;
+                        } else {
+                            result += "L";
+                            leftLocate = no;
+                        }
+                    }
+
+                    break;
+            }
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
 }
