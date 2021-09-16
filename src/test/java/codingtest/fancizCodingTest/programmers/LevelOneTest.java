@@ -1943,4 +1943,55 @@ public class LevelOneTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
     }
+
+    /**
+     * 네오와 프로도가 숫자놀이를 하고 있습니다. 네오가 프로도에게 숫자를 건넬 때 일부 자릿수를 영단어로 바꾼 카드를 건네주면 프로도는 원래 숫자를 찾는 게임입니다.
+     * 다음은 숫자의 일부 자릿수를 영단어로 바꾸는 예시입니다.
+     * 1478 → "one4seveneight"
+     * 234567 → "23four5six7"
+     * 10203 → "1zerotwozero3"
+     * 이렇게 숫자의 일부 자릿수가 영단어로 바뀌어졌거나, 혹은 바뀌지 않고 그대로인 문자열 s가 매개변수로 주어집니다. s가 의미하는 원래 숫자를 return 하도록 solution 함수를 완성해주세요.
+     * 참고로 각 숫자에 대응되는 영단어는 다음 표와 같습니다.
+     */
+    @Test
+    public void 숫자_문자열과_영단어() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 234567;
+        String s = "23four5six7";
+
+        /*
+        //음 나름 잘 풀었다 생각했는데 생각보다 훨씬 쉬운방법이 있었다..
+        그냥 0-9까지 차례대로 문자를 뽑아서 돌리면서 그걸로 replace하면 되는거였다 후
+        더 쉽게 변경할 수 있는 방법이 있었음에도 문자열이 붙어있다는거에 당황해서 문자를 쪼개서 하나씩 돌려버렸다 씁..
+        String[] sArr = s.split("");
+        StringBuilder result = new StringBuilder();
+        StringBuilder finder = new StringBuilder();
+        List<String> engNum = List.of("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
+
+        for (int i=0; i<sArr.length; i++) {
+            if (sArr[i].matches("[+-]?\\d*(\\.\\d+)?")) {
+                result.append(sArr[i]);
+                continue;
+            }
+
+            finder.append(sArr[i]);
+
+            if (engNum.indexOf(finder.toString()) > -1) {
+                result.append(engNum.indexOf(finder.toString()));
+                finder.setLength(0);
+            }
+        }
+        */
+
+        String[] strArr = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+        for(int i=0; i<strArr.length; i++) {
+            s = s.replaceAll(strArr[i], Integer.toString(i));
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(Integer.parseInt(s)));
+    }
 }
