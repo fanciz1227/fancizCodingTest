@@ -195,4 +195,90 @@ public class LevelTwoTest {
 
         return cnt;
     }
+
+    /**
+     * Finn은 요즘 수학공부에 빠져 있습니다. 수학 공부를 하던 Finn은 자연수 n을 연속한 자연수들로 표현 하는 방법이 여러개라는 사실을 알게 되었습니다. 예를들어 15는 다음과 같이 4가지로 표현 할 수 있습니다.
+     * 1 + 2 + 3 + 4 + 5 = 15
+     * 4 + 5 + 6 = 15
+     * 7 + 8 = 15
+     * 15 = 15
+     * 자연수 n이 매개변수로 주어질 때, 연속된 자연수들로 n을 표현하는 방법의 수를 return하는 solution를 완성해주세요.
+     */
+    @Test
+    public void 숫자의_표현() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 4;
+        int result = 0;
+        int n = 15;
+
+        for (int i=1; i<=n; i++) {
+            int inum = i;
+            int add = 0;
+
+            while (true) {
+                add += inum;
+
+                if (add == n) {
+                    result++;
+                    break;
+                } else if (add > n) {
+                    break;
+                }
+
+                inum++;
+            }
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
+
+    /**
+     * 자연수 n이 주어졌을 때, n의 다음 큰 숫자는 다음과 같이 정의 합니다.
+     *
+     * 조건 1. n의 다음 큰 숫자는 n보다 큰 자연수 입니다.
+     * 조건 2. n의 다음 큰 숫자와 n은 2진수로 변환했을 때 1의 갯수가 같습니다.
+     * 조건 3. n의 다음 큰 숫자는 조건 1, 2를 만족하는 수 중 가장 작은 수 입니다.
+     * 예를 들어서 78(1001110)의 다음 큰 숫자는 83(1010011)입니다.
+     *
+     * 자연수 n이 매개변수로 주어질 때, n의 다음 큰 숫자를 return 하는 solution 함수를 완성해주세요.
+     */
+    @Test
+    public void 다음_큰_숫자() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 83;
+        int n = 78;
+        int result = 0;
+        int nBinaryCnt = this.decimalToBinary(n);
+
+        //2진수로 변환 후에 1을 카운트 해주는 로직을 썼는데 Integer class에 있는 Integer.bitCount(n) 를 이용하면 더 간단하게 구현이 가능하다.
+        while (true) {
+            n++;
+
+            if (nBinaryCnt == this.decimalToBinary(n)) {
+                result = n;
+                break;
+            }
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
+
+    private int decimalToBinary(int n) {
+        int cnt = 0;
+
+        while (n > 0) {
+            if ((n % 2) == 1) cnt++;
+            n /= 2;
+        }
+
+        return cnt;
+    }
 }
