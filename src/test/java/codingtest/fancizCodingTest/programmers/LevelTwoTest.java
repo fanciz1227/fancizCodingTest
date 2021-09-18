@@ -6,6 +6,7 @@ import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -280,5 +281,61 @@ public class LevelTwoTest {
         }
 
         return cnt;
+    }
+
+    /**
+     * 괄호가 바르게 짝지어졌다는 것은 '(' 문자로 열렸으면 반드시 짝지어서 ')' 문자로 닫혀야 한다는 뜻입니다. 예를 들어
+     * "()()" 또는 "(())()" 는 올바른 괄호입니다.
+     * ")()(" 또는 "(()(" 는 올바르지 않은 괄호입니다.
+     * '(' 또는 ')' 로만 이루어진 문자열 s가 주어졌을 때, 문자열 s가 올바른 괄호이면 true를 return 하고, 올바르지 않은 괄호이면 false를 return 하는 solution 함수를 완성해 주세요.
+     */
+    @Test
+    public void 올바른_괄호() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final boolean answer = false;
+        boolean result = true;
+        String s = "())()";
+
+        /*
+        int cnt = 0;
+
+        //처음에 split을 이용해서 배열로 문제를 풀었는데 시간초과가 나길래 이상하다 싶었는데 charAt으로 하니까 된다..
+        //참나 뭔 함정같지도 않은 함정을 넣어놨다
+        for (int i=0; i<sArr.length; i++) {
+            if('(' == s.charAt(i)) cnt++; //(이면 추가하고
+            if(')' == s.charAt(i)) cnt--; //)이면 뺀다
+
+            if (cnt < 0) break; //근데 cnt가 0인 상태에서 )이여서 빼게되면 그건 잘못된 순서로 인식하기때문에 break해서 false로 처리한다. 이때 answer의 초기값은 false로 해야지만 정상 처리 된다.
+        }
+
+        if (cnt == 0) answer = true; //정상적인 순서대로 없어지게 되면 cnt가 0이기 떄문에 true로 처리한다.
+
+         */
+
+        //스택을 이용한 풀이다.
+        //(일때만 push를 해주고 )일때는 pop을 해서 추출해내는 방식이다.
+        Stack<Character> stack = new Stack<>();
+
+        for (int i=0; i<s.length(); i++) {
+            char ch = s.charAt(i);
+
+            if ('(' == ch) {
+                stack.push('(');
+            } else {
+                if (stack.isEmpty()) { //중간에 ( 가 푸시되지 않은 상태에서 )을 pop하려고 했을때 푸시된 데이터가 없으므로 잘못된 순서로 인식하여 false로 리턴한다.
+                    result = false;
+                    break;
+                }
+                stack.pop();
+            }
+        }
+
+        if (!stack.isEmpty()) result = false; //스택내에 남은값이 있으면 완벽하게 처리된 문장이 아니므로 false를 리턴한다.
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
     }
 }
