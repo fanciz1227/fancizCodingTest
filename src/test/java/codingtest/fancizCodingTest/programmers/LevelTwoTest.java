@@ -422,4 +422,42 @@ public class LevelTwoTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
     }
+
+    @Test
+    public void 스킬트리_개선() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 2;
+        int result = 0;
+        String skill = "CBD";
+        String[] skill_trees = {"BACDE", "CBADF", "AECB", "BDA", "CED"};
+
+        /*
+        다른 사람이 푼 문제인데 내가 찾으려했던 indexOf 값을 skill에 있는 선언되어 있는 문자를 정규표현식을 이용해서 풀었다.
+        나는 대략 30줄짜리 코드를 짜고 불필요한 list선언들이 3번이나 있었던거에 반면 아래 코드는 정규표현식을 이용해서 간단하게 처리했다.
+
+        ArrayList<String> skillTrees = new ArrayList<String>(Arrays.asList(skill_trees));
+        Iterator<String> it = skillTrees.iterator();
+
+        while (it.hasNext()) {
+            //정규표현식 [^CBD]를 이용해서 해당 문자가 있는지 파악하고 나머지 값을 ""로 치환함과 동시에 indexOf를 통해 순서대로 선언되어있는 값인지 판단하여 0이 아니면(순서가 틀렸다면) iterator에서 지워준다.
+            if (skill.indexOf(it.next().replaceAll("[^" + skill + "]", "")) != 0) {
+                it.remove();
+            }
+        }
+
+        answer = skillTrees.size(); //while에서 순서가 틀려서 remove된 요소를 제외하고 남아있는 size를 찾으면 정답이 된다.
+         */
+
+        //위에 다른 사람이 푼 방식을 iterator와 arraylist를 제거하고 개선해보았다. 시간복잡도는 내가 풀었던 방식보다 좋은듯한데 실제로 시행해보니 수행시간이 차이가 꽤 있다..
+        //내가 푼 방식은 2~3ms인 반면 정규표현식으로 for문을 하나만 돌렸음에도 불구하고 6~8ms가 걸렸다. 이러한 이유가 왜인지 한번 알아봐야할듯하다..
+        for (String tree : skill_trees) {
+            if (skill.indexOf(tree.replaceAll("[^" + skill + "]", "")) == 0) result++;
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
 }
