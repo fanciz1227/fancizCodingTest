@@ -4,10 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StopWatch;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -397,24 +394,66 @@ public class LevelTwoTest {
         String[] skill_trees = {"BACDE", "CBADF", "AECB", "BDA", "CED"};
 
         for (String str : skill_trees) {
-            String[] skillArr = skill.split("");
-            List<String> stList = new ArrayList<>(Arrays.asList(str.split("")));
+            if (!skill.isBlank()) { //skill이 없는 경우도 있기 때문에 체크한다.
+                List<String> skList = new ArrayList<>(Arrays.asList(skill.split("")));
+                List<String> stList = new ArrayList<>(Arrays.asList(str.split("")));
+                HashMap<String, Integer> skillMap = new HashMap<>();
 
-            int index = 1;
-            int cnt = 0;
-
-            for (String sk : skillArr) {
-                if (stList.indexOf(sk) > -1 && cnt == 0) index = stList.indexOf(sk);
-
-                if (index > stList.indexOf(sk)) {
-                    index = -1;
-                    break;
-                } else {
-                    index = stList.indexOf(sk);
+                for (String tree : stList) {
+                    if (skList.indexOf(tree) > -1) skillMap.put(tree, stList.indexOf(tree)); //skill tree list만큼 돌면서 skill내에 존재한다면 skillMap에 찾은 스킬과 현재 skill_trees에 선언된 index 값을 넣어준다.
                 }
-            }
 
-            if (index > 0) result++;
+                List<Map.Entry<String, Integer>> entryList = new ArrayList<>(skillMap.entrySet());
+                entryList.sort(Map.Entry.comparingByValue()); //위에서 수집된 skillMap을 value로 오름차순 정렬을 해준다.
+                StringBuilder sb = new StringBuilder();
+
+                for (Map.Entry<String, Integer> entry : entryList) {
+                    sb.append(entry.getKey()); //value로 정렬된 값을 하나의 문자로 만들어주면 BCD, CBD, CB, BD, CD 와 같은 순서 문자를 찾는다.
+                }
+
+                if (skill.indexOf(sb.toString()) == 0) result++; //skill에서 하나의 문자로 만든 값을 indexOf로 찾았을때 정상적인 순서로 있다면 C부터 값이 차례대로 선언되어있기 때문에 index값이 0이 나와야한다. 따라서 0인 값만 카운트 해주면 처리된다.
+
+            } else { //skill이 없으면 어떻게 찍던 skill tree와는 상관이 없기 때문에 모든 요소를 다 카운트 해주면 된다.
+                result++;
+            }
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
+
+    @Test
+    public void 스킬트리_개선() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 2;
+        int result = 0;
+        String skill = "CBD";
+        String[] skill_trees = {"BACDE", "CBADF", "AECB", "BDA", "CED"};
+
+        /*
+        다른 사람이 푼 문제인데 내가 찾으려했던 indexOf 값을 skill에 있는 선언되어 있는 문자를 정규표현식을 이용해서 풀었다.
+        나는 대략 30줄짜리 코드를 짜고 불필요한 list선언들이 3번이나 있었던거에 반면 아래 코드는 정규표현식을 이용해서 간단하게 처리했다.
+
+        ArrayList<String> skillTrees = new ArrayList<String>(Arrays.asList(skill_trees));
+        Iterator<String> it = skillTrees.iterator();
+
+        while (it.hasNext()) {
+            //정규표현식 [^CBD]를 이용해서 해당 문자가 있는지 파악하고 나머지 값을 ""로 치환함과 동시에 indexOf를 통해 순서대로 선언되어있는 값인지 판단하여 0이 아니면(순서가 틀렸다면) iterator에서 지워준다.
+            if (skill.indexOf(it.next().replaceAll("[^" + skill + "]", "")) != 0) {
+                it.remove();
+            }
+        }
+
+        answer = skillTrees.size(); //while에서 순서가 틀려서 remove된 요소를 제외하고 남아있는 size를 찾으면 정답이 된다.
+         */
+
+        //위에 다른 사람이 푼 방식을 iterator와 arraylist를 제거하고 개선해보았다. 시간복잡도는 내가 풀었던 방식보다 좋은듯한데 실제로 시행해보니 수행시간이 차이가 꽤 있다..
+        //내가 푼 방식은 2~3ms인 반면 정규표현식으로 for문을 하나만 돌렸음에도 불구하고 6~8ms가 걸렸다. 이러한 이유가 왜인지 한번 알아봐야할듯하다..
+        for (String tree : skill_trees) {
+            if (skill.indexOf(tree.replaceAll("[^" + skill + "]", "")) == 0) result++;
         }
 
         stopWatch.stop();
