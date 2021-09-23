@@ -460,4 +460,38 @@ public class LevelTwoTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
     }
+
+    /**
+     * n초 간의 주가를 초 단위로 기록한 배열 prices가 매개변수로 주어질 때, 각 초의 주가를 기준으로 해당 초 부터 n초 사이에 가격이 떨어지지 않은 시간은 몇 초인지 배열에 담아 return 하도록 solution 함수를 완성하세요.\
+     * 입출력 예 설명
+     * 1초의 주가는 1이며 1초부터 5초까지 총 4초간 주가를 유지했습니다.
+     * 2초의 주가는 2이며 2초부터 5초까지 총 3초간 주가를 유지했습니다.
+     * 3초의 주가는 3이며 4초의 주가는 2로 주가가 떨어졌지만 3초에서 4초가 되기 직전까지의 1초간 주가가 유지 된것으로 봅니다. 따라서 5초까지 총 1초간 주가를 유지했습니다.
+     * 4초의 주가는 2이며 4초부터 5초까지 총 1초간 주가를 유지했습니다.
+     * 5초의 주가는 3이며 5초 이후로는 데이터가 없으므로 총 0초간 주가를 유지했습니다.
+     */
+    @Test
+    public void 주식가격() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int[] answer = {4,3,1,1,0};
+        int[] prices = {1,2,3,2,3};
+        int[] result = new int[prices.length];
+
+        for (int i=0; i<prices.length; i++) {
+            int cnt = 0;
+
+            for (int j=i+1; j<prices.length; j++) { //i번의 다음 숫자들과 비교해야하기 때문에 시작을 i+1로 해준다.
+                cnt++; //다음 숫자에 수가 바뀌어도 1초는 유지된것으로 판단하기 때문에 기본적으로 cnt를 늘려준다.
+                if (prices[i] > prices[j]) break; //i번째 수가 j번째 수보다 작으면 주가 유지에 실패했기 때문에 for문을 벗어난다.
+            }
+
+            result[i] = cnt;
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
 }
