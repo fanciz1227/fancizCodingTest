@@ -532,4 +532,36 @@ public class LevelTwoTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
     }
+
+    /**
+     * 피보나치 수는 F(0) = 0, F(1) = 1일 때, 1 이상의 n에 대하여 F(n) = F(n-1) + F(n-2) 가 적용되는 수 입니다.
+     * 예를들어
+     * F(2) = F(0) + F(1) = 0 + 1 = 1
+     * F(3) = F(1) + F(2) = 1 + 1 = 2
+     * F(4) = F(2) + F(3) = 1 + 2 = 3
+     * F(5) = F(3) + F(4) = 2 + 3 = 5
+     * 와 같이 이어집니다.
+     * 2 이상의 n이 입력되었을 때, n번째 피보나치 수를 1234567으로 나눈 나머지를 리턴하는 함수, solution을 완성해 주세요.
+     */
+    @Test
+    public void 피보나치_수() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 2;
+        int n = 3;
+        int[] fiboArr = new int[n+1]; //기존 배열은 0부터 시작하기 때문에 +1을 해줘서 index가 n이 될 수 있게 선언한다.
+        fiboArr[0] = 0; //F(0)은 0이다.
+        fiboArr[1] = 1; //F(1)은 1이다.
+
+        for (int i=2; i<=n; i++) { //2이상의 값부터 처리해준다. n이 2미만 일 경우 그냥 fiboArr에 있는 fiboArr[n]값으로 대체되어 별도 처리 없이 바로 리턴한다.
+            fiboArr[i] = (fiboArr[i-1] + fiboArr[i-2]) % 1234567; //i가 2일경우 F(2) = F(2-1) + F(2-2) => 즉 F(2) = F(0) + F(1) = 1이다. 여기서 더한값을 1234567로 나눠서 나머지를 해당 배열 값에 넣어준다.
+            //1234567로 나눈 이유는 int라는 자료형은 -2,147,483,648 ~ 2,147,483,647까지의 값만을 표현할 수 있는데 피보나치 수열은 값을 계속 자가증식하므로 n=44만 되어도 int형의 값을 넘어서버린다.
+            // 따라서 매번 피보나치수를 1234567로 나눠서 int형 자료형에 맞게 쓸 수 있도록 한것이다.
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(fiboArr[n]));
+    }
 }
