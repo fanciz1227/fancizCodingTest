@@ -564,4 +564,52 @@ public class LevelTwoTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(fiboArr[n]));
     }
+
+    /**
+     * 124 나라가 있습니다. 124 나라에서는 10진법이 아닌 다음과 같은 자신들만의 규칙으로 수를 표현합니다.
+     * 124 나라에는 자연수만 존재합니다.
+     * 124 나라에는 모든 수를 표현할 때 1, 2, 4만 사용합니다.
+     * 예를 들어서 124 나라에서 사용하는 숫자는 다음과 같이 변환됩니다.
+     * 10진법 124나라 10진법 124나라
+     * 1	1	6	14
+     * 2	2	7	21
+     * 3	4	8	22
+     * 4	11	9	24
+     * 5	12	10	41
+     * 자연수 n이 매개변수로 주어질 때, n을 124 나라에서 사용하는 숫자로 바꾼 값을 return 하도록 solution 함수를 완성해 주세요.
+     */
+    @Test
+    public void 일이사_나라의_숫자() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final String answer = "12";
+        int n = 5;
+        StringBuilder sb = new StringBuilder();
+
+        /*while (n > 0) {
+            int mok = n % 3; //n을 3으로 나눠준다.
+
+            if (mok == 0) { //n을 3으로 나눈 몫이 0 즉 3일때는 124나라에서는 4가 되어야하기 때문에 4를 대입해준다.
+                sb.append(4);
+                n = (n / 3) - 1; //n이 3의 배수이기 때문에 n/3값에 -1을 해줘서 n을 계산해준다.
+            } else {
+                sb.append(mok);
+                n /= 3; //3진수기때문에 0,1,2로 값이 생성되기 때문에 나눠 떨어지는 0을 제외한 나머지는 그대로 대입하고 다시 3으로 나눈 나머지를 n에 대입해준다.
+            }
+        }*/
+
+        //배열을 이용한 풀이도 있길래 가져와봤다.
+        //3진수로 바꿀때 012가 되기때문에 배열에 대입하여 문제를 풀 수 있다.
+        String[] num = {"4","1","2"};
+
+        while (n > 0) {
+            sb.append(num[n % 3]);
+            n = (n - 1) / 3; //이 부분이 관건인데.. n-1을 통해 한자리씩 땡기면서 모듈러 연산을 했다고 하는데 솔직히 잘 모르겠다.. 수학을 잘하면 소스가 이렇게나 간단해질 수 있다니 ㅠ
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(sb.reverse().toString()));
+    }
 }
