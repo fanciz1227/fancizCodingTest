@@ -612,4 +612,64 @@ public class LevelTwoTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(sb.reverse().toString()));
     }
+
+    /**
+     * JadenCase란 모든 단어의 첫 문자가 대문자이고, 그 외의 알파벳은 소문자인 문자열입니다. 문자열 s가 주어졌을 때, s를 JadenCase로 바꾼 문자열을 리턴하는 함수, solution을 완성해주세요.
+     *
+     * 제한 조건
+     * s는 길이 1 이상인 문자열입니다.
+     * s는 알파벳과 공백문자(" ")로 이루어져 있습니다.
+     * 첫 문자가 영문이 아닐때에는 이어지는 영문은 소문자로 씁니다. ( 첫번째 입출력 예 참고 )
+     */
+    @Test
+    public void JadenCase_문자열_만들기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final String answer = "  People Unfollowed Me";
+        String s = "  people unFollowed me";
+        StringBuilder sb = new StringBuilder();
+
+        /*String[] sArr = s.split(""); //한글자씩 잘라서 배열로 만든다.
+
+        int index = 0;
+
+        for (int i=0; i<sArr.length; i++) {
+            if (" ".equals(sArr[i])) { //공백일 경우 공백을 넣어주고 continue 한다.
+                sb.append(" ");
+                index = 0; //공백이 나왔다면 문자가 다시 시작되는 경우이므로 index를 0으로 해서 첫글자인지 판단한다.
+                continue;
+            }
+
+            if (index == 0) { //index가 0이면 첫글자로 간주한다.
+                index = 1; //첫글자 처리는 끝났기 때문에 index에 1을 넣어 다음 배열문자에서는 첫글자가 아닌것으로 세팅해준다.
+                char firstCh = sArr[i].charAt(0); //공백이 아닐경우 숫자인지 판별한다.
+
+                if (48 <= firstCh && firstCh <= 57) { //숫자면 그냥 append하고 continue 한다.
+                    sb.append(sArr[i]);
+                    continue;
+                } else { //숫자가 아닌 문자면 대문자로 치환해서 append하고 continue 한다.
+                    sb.append(sArr[i].toUpperCase());
+                    continue;
+                }
+            }
+
+            if (index > 0) { //index가 0보다 크므로 첫글자가 아니기 때문에 소문자로 치환한다.
+                sb.append(sArr[i].toLowerCase());
+            }
+        }*/
+
+        //위에 길고 긴 저 소스들도 문제를 통과하긴 했지만 더 짧고 간결한 소스가 있었다..
+        String[] sArr = s.toLowerCase().split(""); //모두 소문자로 바꾼뒤 한글자씩 자른다.
+        boolean first = true; //첫글자 유무를 판단해서 boolean으로 처리해준다.
+
+        for (String str : sArr) {
+            sb.append(first ? str.toUpperCase() : str); //모두 소문자인 상태이기 때문에 첫글자라면 대문자로 바꾼다. 숫자는 안먹기때문에 자연스럽게 패스된다.
+            first = " ".equals(str) ? true : false; //현재 문자가 공백일 경우 문자가 끝났다고 봐야하기 때문에 first를 true로 만들고 그 외에 문자들은 false로 만들어 대문자로 치환되지 않게 한다.
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(sb.toString()));
+    }
 }
