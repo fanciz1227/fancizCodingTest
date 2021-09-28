@@ -95,7 +95,7 @@ public class hanbitCodingTest {
 
             //범위에서 벗어나면 이동한 좌표를 처리하지 않는다.
             //1,1부터 시작이기때문에 0이나 n보다 큰 값이 나오면 좌표를 벗어난것으로 간주한다.
-            if(nx <= 0 || ny <= 0 || nx > n || nx > n) continue;
+            if(nx <= 0 || ny <= 0 || nx > n || ny > n) continue;
 
             x = nx;
             y = ny;

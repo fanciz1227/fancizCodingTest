@@ -672,4 +672,87 @@ public class LevelTwoTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(sb.toString()));
     }
+
+    /**
+     * 게임 캐릭터를 4가지 명령어를 통해 움직이려 합니다. 명령어는 다음과 같습니다.
+     * U: 위쪽으로 한 칸 가기
+     * D: 아래쪽으로 한 칸 가기
+     * R: 오른쪽으로 한 칸 가기
+     * L: 왼쪽으로 한 칸 가기
+     * 캐릭터는 좌표평면의 (0, 0) 위치에서 시작합니다. 좌표평면의 경계는 왼쪽 위(-5, 5), 왼쪽 아래(-5, -5), 오른쪽 위(5, 5), 오른쪽 아래(5, -5)로 이루어져 있습니다.
+     */
+    @Test
+    public void 방문_길이() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 1;
+        String dirs = "LRLRL";
+        int n = 5;
+        int x = 0;
+        int y = 0;
+        int result = 0;
+
+        String[] locate = dirs.split("");
+        List<String> visitLocateArr = new ArrayList<>();
+
+        //순서대로 조합하면 L,R,U,D
+        int[] dx = {-1, 1, 0, 0};
+        int[] dy = {0, 0, 1, -1};
+
+        for (String str : locate) {
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sbReverse = new StringBuilder();
+            int nx = 0;
+            int ny = 0;
+
+            switch (str) {
+                case "L" :
+                    nx = x + dx[0];
+                    ny = y + dy[0];
+                    break;
+                case "R" :
+                    nx = x + dx[1];
+                    ny = y + dy[1];
+                    break;
+                case "U" :
+                    nx = x + dx[2];
+                    ny = y + dy[2];
+                    break;
+                case "D" :
+                    nx = x + dx[3];
+                    ny = y + dy[3];
+                    break;
+                default: break;
+            }
+
+            //정방향으로 갔을때의 루트를 입력한다.
+            sb.append(x);
+            sb.append(y);
+            sb.append(nx);
+            sb.append(ny);
+
+            //반대방향으로 이동하는 루트도 구해준다.
+            sbReverse.append(nx);
+            sbReverse.append(ny);
+            sbReverse.append(x);
+            sbReverse.append(y);
+
+            String visited = sb.toString(); //왼->오 로 방문했다고 쳤을때
+            String visitedReverse = sbReverse.toString(); //오->왼 으로 이동한 루트도 같이 구해준다.
+
+            if (Math.abs(nx) > n || Math.abs(ny) > n) continue; //방문한 지점이 맵의 최대크기인 5, -5 총 10 사이즈를 벗어나게 된다면 체크하지 않고 다음 루트를 체크한다.
+            x = nx; //이동한 지점을 현재 지점으로 대입한다.
+            y = ny; //이동한 지점을 현재 지점으로 대입한다.
+
+            if (visitLocateArr.indexOf(visited) > -1) continue; //방향성이 없는 방문루트를 구해야하기 때문에 위에서 visited, visitedReverse를 같이 구해서 list에 넣어주고 그 list 안에서 이동한 흔적이 있는지 찾는다.
+            result++; //모든 조건을 통과하면 한번도 방문한적 없는 루트로 간것이기떄문에 카운트해준다.
+            visitLocateArr.add(visited); //방문 리스트에 정방향, 역방향 모두 데이터를 넣어줘서 방향이 안맞는 동일한 루트도 검색할 수 있게 해준다.
+            visitLocateArr.add(visitedReverse);
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
 }
