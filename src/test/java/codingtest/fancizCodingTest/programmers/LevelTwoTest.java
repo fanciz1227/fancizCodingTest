@@ -788,9 +788,6 @@ public class LevelTwoTest {
 
         while (!queue.isEmpty()) {
             HashMap<Integer, Boolean> map = queue.poll();
-            //Map.Entry<String, Integer> entry = (Map.Entry<String, Integer>) map;
-
-            //System.out.println(entry.getValue());
         }
 
         stopWatch.stop();
