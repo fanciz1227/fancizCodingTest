@@ -773,25 +773,54 @@ public class LevelTwoTest {
         stopWatch.start();
 
         final int answer = 5;
-        int result = 0;
         int location = 0;
         int[] priorities = {1, 1, 9, 1, 1, 1};
 
-        Queue<HashMap<Integer, Boolean>> queue = new LinkedList<>();
+        Queue<Print> queue = new LinkedList<>();
 
+        //인쇄 작업 대기열 priorities 만큼 for문으로 queue 대기열을 만들어 준다.
         for (int i=0; i<priorities.length; i++) {
-            HashMap<Integer, Boolean> hashMap = new HashMap<>();
-            hashMap.put(priorities[i], i == location);
+            Print print = new Print(priorities[i], i == location ? true : false); //location과 i가 일치하면 true로 대입해준다.
 
-            queue.offer(hashMap);
+            queue.offer(print);
         }
 
-        while (!queue.isEmpty()) {
-            HashMap<Integer, Boolean> map = queue.poll();
+        int printCount = 0;
+
+        while (!queue.isEmpty()) { //queue 내에 모든 요소가 사라질때까지 무한 반복한다.
+            Print pollPrint = queue.poll(); //큐는 선입 선출이기 떄문에 가장 앞 순서 부터 꺼내온다.
+
+            if (queue.stream().anyMatch(a -> a.getPriorities() > pollPrint.getPriorities())) { //꺼내온 첫 데이터에서 대기열 내 다른 큰 숫자가 존재한다면
+                queue.offer(pollPrint); //가장 앞 순서에서 꺼내온 pollPrint를 다시 가장 최후방으로 입력시킨다.
+            } else { //꺼내온 첫 데이터에서 대기열 내 다른 큰 숫자가 존재하지 않는다면 출력했다고 판단하여 printCount를 증가시킨다.
+                printCount++;
+
+                if (pollPrint.isLocation()) { //출력한 location이 내 대기열이라면 더이상 while을 반복할 필요가 없기 때문에 break하여 while문을 종료시킨다.
+                    break;
+                }
+            }
         }
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
-        assertThat(answer, is(result));
+        assertThat(answer, is(printCount));
+    }
+
+    private class Print {
+        int priorities = 0;
+        boolean location = false;
+
+        public int getPriorities() {
+            return priorities;
+        }
+
+        public boolean isLocation() {
+            return location;
+        }
+
+        Print(int pri, boolean locate) {
+            this.priorities = pri;
+            this.location = locate;
+        }
     }
 }
