@@ -857,7 +857,9 @@ public class LevelTwoTest {
 
             if (day < cmp.completeDate) {
                 queue.poll();
+
                 cnt++;
+
                 end = true;
             }
         }
