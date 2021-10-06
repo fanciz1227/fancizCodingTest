@@ -834,34 +834,51 @@ public class LevelTwoTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        int[] answer = {2, 1};
-        int[] progresses = {93, 30, 55};
-        int[] speeds = {1, 30, 5};
-        int[] result = {0};
+        int[] answer = {1, 3, 2};
+        int[] progresses = {95, 90, 99, 99, 80, 99};
+        int[] speeds = {1, 1, 1, 1, 1, 1};
 
         Queue<Comp> queue = new LinkedList<>();
         List<Integer> completeList = new ArrayList<>();
 
+        //기능개발에 완료되는 일정과 각 값들을 for문으로 queue에다 세팅해준다.
         for (int i=0; i<progresses.length; i++) {
             int percent = (int) Math.ceil((100 - progresses[i]) / (double) speeds[i]);
-            System.out.println(percent);
             queue.offer(new Comp(progresses[i], speeds[i], percent));
         }
 
-        int cnt = 0;
-        int day = 0;
-        boolean end = false;
+        Comp firstCmp = queue.poll(); //while문을 돌리기위해 초기 데이터를 가장 첫데이터로 세팅한다.
+        int cnt = 1; //첫데이터는 있기때문에 cnt를 1로 시작해준다.
+        int day = firstCmp.completeDate; //첫 배포가능 일자를 세팅한다.
+        boolean end = false; //개발완료여부를 초기에는 false로 지정한다.
 
-        while (!queue.isEmpty()) {
-            Comp cmp = queue.peek();
-
-            if (day < cmp.completeDate) {
-                queue.poll();
-
-                cnt++;
-
-                end = true;
+        while (true) {
+            if (queue.isEmpty()) { //while문으로 무한반복을 하다 더이상 꺼낼 큐가 없다면 종료 시킴과 동시에 현재까지 쌓은 cnt를 list에 추가하고 종료시킨다.
+                completeList.add(cnt);
+                break;
             }
+
+            Comp cmp = queue.peek(); //우선 큐에 존재하는 값을 바로 꺼내지 않고 참조하여 사용한다.
+
+            if (day >= cmp.completeDate) { //참조해서 꺼낸 날짜 값이 day보다 작거나 같으면 큐에서 꺼냄과 동시에 cnt를 진행한다.
+                queue.poll(); //같은 배포일에 배포할 수 있을때만 배포 카운트에 포함해야하기 때문에 이때만 큐에서 꺼내준다.
+                cnt++;
+            } else { //참조해서 꺼낸 값이 day보다 크면 더 이상 배포할수 없다고 판단하여 종료처리를 한다.
+                day = cmp.completeDate; //비교값인 day를 큐에서 꺼낸 더 큰 날짜로 변경한다.
+                end = true; //여태까지 쌓은 cnt를 list에 넣어야하기 떄문에 종료값으로 바꾼다.
+            }
+
+            if (end) { //종료값으로 인식될 경우 여태까지 쌓은 cnt를 list에 대입한다.
+                completeList.add(cnt);
+                end = false; //다시 반복문을 돌기 위해 종료값은 false로 cnt는 0으로 초기화 후 다시 진행한다.
+                cnt = 0;
+            }
+        }
+
+        int[] result = new int[completeList.size()];
+
+        for (int i=0; i<completeList.size(); i++) { //list에 있는 값 만큼 int 배열에 추가한다.
+            result[i] = completeList.get(i);
         }
 
         stopWatch.stop();
