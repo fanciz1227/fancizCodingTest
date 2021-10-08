@@ -807,8 +807,8 @@ public class LevelTwoTest {
     }
 
     private class Print {
-        int priorities = 0;
-        boolean location = false;
+        int priorities;
+        boolean location;
 
         public int getPriorities() {
             return priorities;
@@ -896,15 +896,50 @@ public class LevelTwoTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final int answer = 8;
-        int bridge_length = 2;
-        int weight = 10;
-        int[] truck_weights = {7,4,5,6};
-        int result = 0;
+        final int answer = 19;
+        int bridge_length = 5;
+        int weight = 5;
+        int[] truck_weights = {2, 2, 2, 2, 1, 1, 1, 1, 1};
 
+        Queue<Integer> waitTruck = new LinkedList<>(); //대기중인 트럭
+        Queue<Cross> crossTruck = new LinkedList<>(); //다리를 건너는 트럭
+
+        for (int truck : truck_weights) { //트럭들을 대기 queue에 넣어준다.
+            waitTruck.offer(truck);
+        }
+
+        int time = 0;
+
+        while (!waitTruck.isEmpty() || !crossTruck.isEmpty()) { //대기중인 트럭이나 다리를 건너는 트럭이 하나라도 데이터가 있으면 반복
+            int kg = 0;
+            time++;
+
+            //다리를 건너는 트럭 데이터가 있을때
+            //현재까지 진행된 시간 >= 다리에 진입한 시간 + 다리를 건너는 소요 시간 일때 다리를 건넌것으로 판단하고 poll한다.
+            if (!crossTruck.isEmpty() && time >= (bridge_length + crossTruck.peek().crossTime)) crossTruck.poll();
+
+            if (waitTruck.peek() != null) { //대기중인 트럭이 있을때
+                if (!crossTruck.isEmpty()) kg = crossTruck.stream().mapToInt(Cross::getKg).sum(); //다리를 건너는 트럭이 있을때 현재 건너는 트럭의 모든 무게를 kg에 대입해준다.
+                if (kg + waitTruck.peek() <= weight) crossTruck.offer(new Cross(waitTruck.poll(), time)); //현재 건너는 트럭의 모든 무게 + 대기중인 트럭 무게를 합쳐서 다리의 최대 중량 weight 보다 작을때만 대기 중인 트럭을 poll해서 다리를 건너는 트럭으로 offer 해준다.
+            }
+        }
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
-        assertThat(answer, is(result));
+        assertThat(answer, is(time));
+    }
+
+    private class Cross {
+        int kg; //트럭의 무게
+        int crossTime; //트럭이 진입한 시간
+
+        public int getKg() {
+            return this.kg;
+        }
+
+        Cross(int kg, int crossTime) {
+            this.kg = kg;
+            this.crossTime = crossTime;
+        }
     }
 }
