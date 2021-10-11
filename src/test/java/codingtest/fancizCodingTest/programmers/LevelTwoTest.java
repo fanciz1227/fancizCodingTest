@@ -1007,6 +1007,7 @@ public class LevelTwoTest {
             if (temp + peopleArr[i] >= limit) {
                 result++;
                 temp = peopleArr[i];
+
             } else {
                 if (i == peopleArr.length) result++;
                 temp += peopleArr[i];
