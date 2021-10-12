@@ -998,7 +998,8 @@ public class LevelTwoTest {
         int[] people = {70, 80, 50};
         int result = 0;
 
-        Integer peopleArr[] = Arrays.stream(people).boxed().toArray(Integer[]::new);
+        //기존에 풀었던 방식은 모든 요소가 모두 한개의 보트만 탈때는 오류가 발생했다.. 2개의 인자값을 비교해야하는데 어느조건에도 맞지 않아 무시되는 경우가 발생해서 생긴 문제였다.
+        /*Integer peopleArr[] = Arrays.stream(people).boxed().toArray(Integer[]::new);
         Arrays.sort(peopleArr, Collections.reverseOrder());
 
         int temp = 0;
@@ -1007,11 +1008,24 @@ public class LevelTwoTest {
             if (temp + peopleArr[i] >= limit) {
                 result++;
                 temp = peopleArr[i];
-
             } else {
                 if (i == peopleArr.length) result++;
                 temp += peopleArr[i];
             }
+        }*/
+
+        Arrays.sort(people); //먼저 people 배열을 정렬해준다. 기본인 오름차순으로 되어있다.
+
+        Deque<Integer> deque = new ArrayDeque<>(people.length); //덱을 이용해서 양방향 큐의 기능을 동시에 이용하여 처리한다.
+        for (int p : people) deque.add(p);
+
+        while (!deque.isEmpty()) { //덱이 모두 추출되어 비어있을때까지 반복한다.
+            int last = deque.pollLast(); //가장 먼저 마지막 요소를 poll 해서 덱에서 빼낸다.
+
+            //덱의 마지막 요소를 빼냈기 때문에 덱이 비어있는 경우가 있어 isEmpty 체크를 해주고 아니라면 마지막 요소 + 가장 첫번째 요소를 참조한값이 limit 보다 작으면 첫번째 요소도 poll해서 빼낸다.
+            //마지막 요소 + 가장 첫번째 참조 요소가 limit 보다 크면 둘이 탈 수 없기 때문에 첫번째 요소를 poll하지 않고 남겨둬서 마지막 요소 혼자 보트를 타게 처리된다.
+            if (!deque.isEmpty() && last + deque.peekFirst() <= limit) deque.pollFirst();
+            result++;
         }
 
         stopWatch.stop();
