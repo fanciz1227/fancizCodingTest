@@ -1032,4 +1032,50 @@ public class LevelTwoTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
     }
+
+    /**
+     * 어떤 숫자에서 k개의 수를 제거했을 때 얻을 수 있는 가장 큰 숫자를 구하려 합니다.
+     * 예를 들어, 숫자 1924에서 수 두 개를 제거하면 [19, 12, 14, 92, 94, 24] 를 만들 수 있습니다. 이 중 가장 큰 숫자는 94 입니다.
+     * 문자열 형식으로 숫자 number와 제거할 수의 개수 k가 solution 함수의 매개변수로 주어집니다.
+     * number에서 k 개의 수를 제거했을 때 만들 수 있는 수 중 가장 큰 숫자를 문자열 형태로 return 하도록 solution 함수를 완성하세요.
+     */
+    @Test
+    public void 큰_수_만들기() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final String answer = "3234";
+        String number = "1231234";
+        int k = 3;
+
+        String result = combination(number.split(""), number.length(), number.length() - k);
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
+
+    private String combination(String[] nums, int n, int r) {
+        String[] result = new String[r];
+        String max = "";
+
+        if(r == 0) {
+            StringBuilder sb = new StringBuilder();
+
+            for (String num : result) {
+                sb.append(num);
+            }
+
+            System.out.println(sb);
+
+        } else if(n < r) {
+            max = "";
+        } else {
+            result[r-1] = nums[n-1];
+            combination(nums, n-1, r-1); //현재 아이템을 선택한 경우에는 r-1하여 추출을 진행하고 0까지 차례대로 추출한다.
+            combination(nums, n-1, r); //현재 아이템을 선택하지 않았을때는 r을 유지하여 다음 아이템을 선택하게 한다.
+        }
+
+        return max;
+    }
 }
