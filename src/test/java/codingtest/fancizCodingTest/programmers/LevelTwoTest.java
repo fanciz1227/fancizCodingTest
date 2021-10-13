@@ -1039,6 +1039,8 @@ public class LevelTwoTest {
      * 문자열 형식으로 숫자 number와 제거할 수의 개수 k가 solution 함수의 매개변수로 주어집니다.
      * number에서 k 개의 수를 제거했을 때 만들 수 있는 수 중 가장 큰 숫자를 문자열 형태로 return 하도록 solution 함수를 완성하세요.
      */
+    String maxNum = "0";
+
     @Test
     public void 큰_수_만들기() {
         StopWatch stopWatch = new StopWatch();
@@ -1047,35 +1049,29 @@ public class LevelTwoTest {
         final String answer = "3234";
         String number = "1231234";
         int k = 3;
+        String[] reComArr = new String[number.length() - k];
+        StringBuilder sb = new StringBuilder();
 
-        String result = combination(number.split(""), number.length(), number.length() - k);
+        combination(number.split(""), number.length(), number.length() - k, reComArr, sb);
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
-        assertThat(answer, is(result));
+        assertThat(answer, is(maxNum));
     }
 
-    private String combination(String[] nums, int n, int r) {
-        String[] result = new String[r];
-        String max = "";
-
+    private void combination(String[] number, int n, int r, String[] reComArr, StringBuilder sb) {
         if(r == 0) {
-            StringBuilder sb = new StringBuilder();
+            for (String num : reComArr) sb.append(num);
 
-            for (String num : result) {
-                sb.append(num);
-            }
-
-            System.out.println(sb);
-
+            if (Integer.parseInt(maxNum) < Integer.parseInt(sb.toString())) maxNum = sb.toString();
+            sb.setLength(0);
+            return;
         } else if(n < r) {
-            max = "";
+            return;
         } else {
-            result[r-1] = nums[n-1];
-            combination(nums, n-1, r-1); //현재 아이템을 선택한 경우에는 r-1하여 추출을 진행하고 0까지 차례대로 추출한다.
-            combination(nums, n-1, r); //현재 아이템을 선택하지 않았을때는 r을 유지하여 다음 아이템을 선택하게 한다.
+            reComArr[r-1] = number[n-1];
+            combination(number, n-1, r-1, reComArr, sb);
+            combination(number, n-1, r, reComArr, sb);
         }
-
-        return max;
     }
 }
