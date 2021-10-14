@@ -1052,6 +1052,7 @@ public class LevelTwoTest {
         String[] reComArr = new String[number.length() - k];
         StringBuilder sb = new StringBuilder();
 
+        //중복조합을 통해서 모든 수를 구한 후에 풀면 풀이는 어느정도 가능하지만 비정상적으로 큰 수가 들어오는 경우 런타임 에러가 발생한다..
         combination(number.split(""), number.length(), number.length() - k, reComArr, sb);
 
         stopWatch.stop();
@@ -1073,5 +1074,96 @@ public class LevelTwoTest {
             combination(number, n-1, r-1, reComArr, sb);
             combination(number, n-1, r, reComArr, sb);
         }
+    }
+
+    @Test
+    public void 큰_수_만들기_v2() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final String answer = "3234";
+        String number = "1231234";
+        String[] num = number.split("");
+        int k = 3;
+        int numberLength = number.length();
+        int limitLength = numberLength - k;
+
+        StringBuilder sb = new StringBuilder();
+        List<Integer> list = new ArrayList<>();
+        int jNo = -1;
+
+        //기존 방식으로 풀었을때는 런타임 에러가 발생해서 다른 방법으로 풀었다.
+        //제공받은 number에서 k만큼 숫자를 왼쪽에서부터 하나씩 제거했을때 가장 큰 숫자를 구해야하기때문에 우선 number.length만큼 for문을 반복하면서 처리한다.
+        for (int i=0; i<limitLength; i++) {
+            int val = 0; //시작 비교를 위해 0을 초기값으로 정해준다.
+
+            //시작점은 jNo에 현재값이 들어오기때문에 +1을해서 다음 숫자부터 탐색
+            //종료는 7 - (4 - 0) + 1 해서 list에 사이즈가 증가할때마다 점점 영역이 늘어나게되서 jNo가 증가하기 때문에 같이 증가하게 된다.
+            for (int j=jNo+1; j<number.length() - (limitLength - list.size()) + 1; j++) {
+                //비교대상값보다 현재 값이 클 경우
+                if (val < Integer.parseInt(num[j])) {
+                    jNo = j; //2차 for문 시작점으로 지정하고
+                    val = Integer.parseInt(num[j]); //val에 해당 값을 넣어준다.
+                    if (val == 9) break; //만약 해당값이 9일경우 무조건 큰 수이기때문에 더이상 비교할 필요가 없어 for문을 벗어난다.
+                }
+            }
+
+            list.add(val); //큰 수가 추출되면 list에 넣어준다.
+        }
+
+        for (int no : list) sb.append(no);
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(sb.toString()));
+    }
+
+    /**
+     * 전화번호부에 적힌 전화번호 중, 한 번호가 다른 번호의 접두어인 경우가 있는지 확인하려 합니다.
+     * 전화번호가 다음과 같을 경우, 구조대 전화번호는 영석이의 전화번호의 접두사입니다.
+     * 구조대 : 119
+     * 박준영 : 97 674 223
+     * 지영석 : 11 9552 4421
+     * 전화번호부에 적힌 전화번호를 담은 배열 phone_book 이 solution 함수의 매개변수로 주어질 때, 어떤 번호가 다른 번호의 접두어인 경우가 있으면 false를 그렇지 않으면 true를 return 하도록 solution 함수를 작성해주세요.
+     */
+    @Test
+    public void 전화번호_목록() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final boolean answer = false;
+        boolean result = true;
+        String[] phone_book = {"119", "97674223", "1195524421"};
+
+        /*HashMap<Integer, String> phoneMap = new HashMap<>();
+
+        for (String phone : phone_book) {
+            phoneMap.put(Integer.parseInt(phone), phone);
+        }
+
+        Object[] mapKey = phoneMap.keySet().toArray();
+        Arrays.sort(mapKey);
+
+        for (Map.Entry<Integer, String> entry : phoneMap.entrySet()) {
+            System.out.println(entry.getKey() + "," + entry.getValue());
+        }*/
+
+        HashSet<String> hashSet = (HashSet<String>) Arrays.stream(phone_book).collect(Collectors.toSet());
+
+        for (String key : hashSet) {
+            System.out.print(key + ",");
+            for (int j = 1; j <= key.length() - 1; j++) {
+                System.out.print(key.substring(0, j) + ",");
+                if (hashSet.contains(key.substring(0, j))){
+                    result = false;
+                    System.out.println("t");
+                }
+            }
+            System.out.println();
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
     }
 }
