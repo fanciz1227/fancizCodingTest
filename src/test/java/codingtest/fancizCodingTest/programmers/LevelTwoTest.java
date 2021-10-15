@@ -1135,7 +1135,8 @@ public class LevelTwoTest {
         boolean result = true;
         String[] phone_book = {"119", "97674223", "1195524421"};
 
-        /*HashMap<Integer, String> phoneMap = new HashMap<>();
+        /* 해당문제는 value가 딱히 필요없어서 hashMap을 이용할 필요는 없지만 hashset이 조금 더 속도가 느린듯한 느낌이다.
+        HashMap<Integer, String> phoneMap = new HashMap<>();
 
         for (String phone : phone_book) {
             phoneMap.put(Integer.parseInt(phone), phone);
@@ -1148,18 +1149,15 @@ public class LevelTwoTest {
             System.out.println(entry.getKey() + "," + entry.getValue());
         }*/
 
+        //stream을 이용해서 별도의 for문 없이 collect 속성을 이용해 hashset 데이터를 바로 세팅했다
         HashSet<String> hashSet = (HashSet<String>) Arrays.stream(phone_book).collect(Collectors.toSet());
 
-        for (String key : hashSet) {
-            System.out.print(key + ",");
-            for (int j = 1; j <= key.length() - 1; j++) {
-                System.out.print(key.substring(0, j) + ",");
-                if (hashSet.contains(key.substring(0, j))){
-                    result = false;
-                    System.out.println("t");
+        for (String key : hashSet) { //전체 hashset 숫자만큼 for문을 돈다
+            for (int j = 1; j < key.length(); j++) { //무조건 0부터 substring을 해야하기때문에 j는 1부터 시작하고 전체 길이까지 반복한다
+                if (hashSet.contains(key.substring(0, j))){ //key.substring으로 하나씩 증가하면서 검색했을때 contains로 hashset내에 존재하는 자료인지 확인한다
+                    result = false; //0부터 시작하기 때문에 string 클래스의 startWith처럼 작동해서 확인이 가능해서 있으면 false로 입력된다
                 }
             }
-            System.out.println();
         }
 
         stopWatch.stop();
