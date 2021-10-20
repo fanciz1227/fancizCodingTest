@@ -1178,15 +1178,30 @@ public class LevelTwoTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final int[] answer = {3, 11};
-        int[] numbers = {2, 7};
-        int[] result = {};
+        final long[] answer = {3L, 11L};
+        long[] numbers = {2, 7};
+        long[] result = new long[numbers.length];
 
         for (int i=0; i<numbers.length; i++) {
-            int fx = numbers[i];
+            if (numbers[i] % 2 == 0) {
+                result[i] = numbers[i] + 1;
+            } else {
+                StringBuilder temp = new StringBuilder();
+                String binaryString = Long.toBinaryString(numbers[i]);
 
-            while (true) {
+                if (!binaryString.contains("0")) {
+                    temp.append("10");
+                    temp.append(binaryString.substring(1).replace("0", "1"));
+                } else {
+                    int lastIndex = binaryString.lastIndexOf("0");
+                    int firstOneIndex = binaryString.indexOf("1", lastIndex);
 
+                    temp.append(binaryString, 0, lastIndex).append("1");
+                    temp.append("0");
+                    temp.append(binaryString.substring(firstOneIndex + 1));
+                }
+
+                result[i] = Long.parseLong(temp.toString(), 2);
             }
         }
 
