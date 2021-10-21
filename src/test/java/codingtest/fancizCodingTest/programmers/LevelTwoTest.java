@@ -1218,4 +1218,35 @@ public class LevelTwoTest {
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
     }
+
+    /**
+     *H-Index는 과학자의 생산성과 영향력을 나타내는 지표입니다. 어느 과학자의 H-Index를 나타내는 값인 h를 구하려고 합니다. 위키백과1에 따르면, H-Index는 다음과 같이 구합니다.
+     * 어떤 과학자가 발표한 논문 n편 중, h번 이상 인용된 논문이 h편 이상이고 나머지 논문이 h번 이하 인용되었다면 h의 최댓값이 이 과학자의 H-Index입니다.
+     * 어떤 과학자가 발표한 논문의 인용 횟수를 담은 배열 citations가 매개변수로 주어질 때, 이 과학자의 H-Index를 return 하도록 solution 함수를 작성해주세요.
+     */
+    @Test
+    public void H_Index() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        final int answer = 10;
+        int[] citations = {8,10,10,15,17,22,24,28,32,42,47};
+        int result = 0;
+
+        Integer newArr[] = Arrays.stream(citations).boxed().toArray(Integer[]::new); //int는 primitive기 때문에 배열에서 내림차순으로 정렬이 안되기 때문에 Integer로 변환한다.
+        Arrays.sort(newArr, Collections.reverseOrder()); //Integer로 변환된 배열을 내림차순으로 정렬한다.
+
+        //내림차순으로 정렬된 배열의 크기만큼 반복한다.
+        for (int i=0; i<newArr.length; i++) {
+            //index가 newArr.length보다 작거나 같으며 (length를 초과한 index는 존재할 수 없기 때문) -> 근데 이 조건은 필요없었다. 있으나 마나 한 쓰레기 조건임.
+            //index값이 for문을 돌면서 내림차순 배열 값보다 크거나 같을 경우에 최대 hIndex라 판단하여 for문을 종료한다.
+            //if (result <= newArr.length && result >= newArr[i]) break;
+            if (result >= newArr[i]) break;
+            result++;
+        }
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        assertThat(answer, is(result));
+    }
 }
