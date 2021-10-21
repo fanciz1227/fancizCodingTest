@@ -1183,16 +1183,16 @@ public class LevelTwoTest {
         long[] result = new long[numbers.length];
 
         for (int i=0; i<numbers.length; i++) {
-            if (numbers[i] % 2 == 0) {
+            if (numbers[i] % 2 == 0) { //짝수면 + 1만 진행 하면된다. 짝수의 2진수는 모두 0으로 끝나기 때문에 끝을 1로 바꾸는 것 만으로 해결이 가능하다.
                 result[i] = numbers[i] + 1;
-            } else {
+            } else { //홀수일때
                 StringBuilder temp = new StringBuilder();
                 String binaryString = Long.toBinaryString(numbers[i]);
 
-                if (!binaryString.contains("0")) {
+                if (!binaryString.contains("0")) { //0을 미포함하는 경우 즉 1로만 이루어진 경우 앞에서 2번째 자리에 0을 삽입하여 처리한다.
                     temp.append("10");
                     temp.append(binaryString.substring(1).replace("0", "1"));
-                } else {
+                } else { //0을 포함하는 경우 마지막 0을 1로 바꾸고 그 뒤에 1을 0으로 바꿔서 처리한다.
                     int lastIndex = binaryString.lastIndexOf("0");
                     int firstOneIndex = binaryString.indexOf("1", lastIndex);
 
@@ -1204,6 +1204,15 @@ public class LevelTwoTest {
                 result[i] = Long.parseLong(temp.toString(), 2);
             }
         }
+
+        /*
+        다른사람의 풀이를 가져와봤는데.. 쉬프트연산을 통해 문제를 해결했다.. 확실히 이런 방법을 통해서도 가능하다는걸 새삼 깨닫게 된다.
+        long[] answer = numbers.clone();
+        for(int i = 0; i< answer.length; i++){
+            answer[i]++; //answer+1 해준다.
+            answer[i] += (answer[i]^numbers[i])>>>2; // xor 연산자를 통해 answer+1 과 answer 값을 비교해서 수가 같게 만들때 쉬피트로 2개까지 민다.. 뭐 이런 뜻이라고 하는데 솔직히 무슨말인지 모르겠다;;
+        }
+         */
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
