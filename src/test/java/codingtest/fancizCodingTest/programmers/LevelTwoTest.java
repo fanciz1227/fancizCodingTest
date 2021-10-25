@@ -1276,12 +1276,11 @@ public class LevelTwoTest {
         for (int i=0; i<clothes.length; i++) {
             clotheMap.put(clothes[i][0], clothes[i][1]);
             countMap.put(clothes[i][1], countMap.getOrDefault(clothes[i][1], 0) + 1);
-
+            System.out.println(clothes[i][1]);
         }
 
         for (Map.Entry<String, String> entry : clotheMap.entrySet()) {
             System.out.println(entry.getKey() + "," + entry.getValue());
-
         }
 
         System.out.println("count: " + countMap.size());
