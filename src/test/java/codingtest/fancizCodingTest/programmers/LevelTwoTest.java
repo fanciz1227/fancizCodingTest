@@ -1268,25 +1268,25 @@ public class LevelTwoTest {
 
         final int answer = 5;
         String[][] clothes = {{"yellowhat", "headgear"}, {"bluesunglasses", "eyewear"}, {"green_turban", "headgear"}};
-        int result = 0;
+        int result = 1;
 
-        HashMap<String, String> clotheMap = new HashMap<>();
-        HashMap<String, Integer> countMap = new HashMap<>();
+        HashMap<String, Integer> clotheMap = new HashMap<>();
 
         for (int i=0; i<clothes.length; i++) {
-            clotheMap.put(clothes[i][0], clothes[i][1]);
-            countMap.put(clothes[i][1], countMap.getOrDefault(clothes[i][1], 0) + 1);
-            System.out.println(clothes[i][1]);
+            //hashMap을 통해 옷의 종류당 몇개의 옷을 가지고 있는지 처리해준다.
+            //옷의 종류를 key로 잡고 getOrDefault를 통해 해당 키와 동일한 옷이 있으면 count를 늘려서 value에 넣어준다.
+            clotheMap.put(clothes[i][1], clotheMap.getOrDefault(clothes[i][1], 0) + 1);
         }
 
-        for (Map.Entry<String, String> entry : clotheMap.entrySet()) {
-            System.out.println(entry.getKey() + "," + entry.getValue());
+        for (Map.Entry<String, Integer> entry : clotheMap.entrySet()) {
+            //옷의 종류에 해당하는 갯수만큼 처리해야 하기 때문에
+            //headgear는 2개, eyewear는 1개 여서 수식으로 전환하면 (2+1)*(1+1)-1 로 확인할 수 있다.
+            result *= entry.getValue() + 1;
         }
 
-        System.out.println("count: " + countMap.size());
-
+        //문제에서는 꼭 한개의 옷이라도 입어야하는데 모두 안입는 경우에 대한 수가 1이 있기때문에 결과값에서 -1을 해서 모두 안입는 경우의 수에 대응해준다.
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
-        assertThat(answer, is(result));
+        assertThat(answer, is(result - 1));
     }
 }
