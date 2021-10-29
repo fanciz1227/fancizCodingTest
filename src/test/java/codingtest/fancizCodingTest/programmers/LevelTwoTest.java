@@ -1309,14 +1309,20 @@ public class LevelTwoTest {
         int[] numbers = {1, 1, 1, 1, 1};
         int target = 3;
 
-        targetBFS();
+        targetBFS(1);
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(targetAnswer));
     }
 
-    private void targetBFS() {
+    private void targetBFS(int start) {
+        Queue<Integer> que = new LinkedList<>();
+        que.offer(start);
 
+        while (!que.isEmpty()) {
+            int x = que.poll();
+            System.out.println(x);
+        }
     }
 }
