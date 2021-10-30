@@ -1300,13 +1300,15 @@ public class LevelTwoTest {
      * 사용할 수 있는 숫자가 담긴 배열 numbers, 타겟 넘버 target이 매개변수로 주어질 때 숫자를 적절히 더하고 빼서 타겟 넘버를 만드는 방법의 수를 return 하도록 solution 함수를 작성해주세요.
      */
     int targetAnswer = 0;
+    int[] numbers = {1, 1, 1, 1, 1};
+
     @Test
     public void 타켓_넘버() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
         final int answer = 5;
-        int[] numbers = {1, 1, 1, 1, 1};
+        //int[] numbers = {1, 1, 1, 1, 1};
         int target = 3;
 
         targetBFS(1);
@@ -1323,6 +1325,10 @@ public class LevelTwoTest {
         while (!que.isEmpty()) {
             int x = que.poll();
             System.out.println(x);
+
+            for (int i=0; i<numbers.length; i++) {
+
+            }
         }
     }
 }
