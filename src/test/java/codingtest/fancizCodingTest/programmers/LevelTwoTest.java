@@ -1299,36 +1299,36 @@ public class LevelTwoTest {
      * +1+1+1+1-1 = 3
      * 사용할 수 있는 숫자가 담긴 배열 numbers, 타겟 넘버 target이 매개변수로 주어질 때 숫자를 적절히 더하고 빼서 타겟 넘버를 만드는 방법의 수를 return 하도록 solution 함수를 작성해주세요.
      */
-    int targetAnswer = 0;
-    int[] numbers = {1, 1, 1, 1, 1};
-
     @Test
-    public void 타켓_넘버() {
+    public void 타겟_넘버() {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
         final int answer = 5;
-        //int[] numbers = {1, 1, 1, 1, 1};
+        int[] numbers = {1, 1, 1, 1, 1};
         int target = 3;
 
-        targetBFS(1);
+        int result = dfs(numbers,0,0, target);
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
-        assertThat(answer, is(targetAnswer));
+        assertThat(answer, is(result));
     }
 
-    private void targetBFS(int start) {
-        Queue<Integer> que = new LinkedList<>();
-        que.offer(start);
+    //탐색은 항상 어렵다.. 재귀호출에 대한 이해도가 떨어지는듯 하다.
+    private int dfs(int[] numbers, int depth, int sum, int target) {
+        if (depth != numbers.length) {
+            int plus = dfs(numbers,depth + 1,sum + numbers[depth], target);
+            int minus = dfs(numbers,depth + 1,sum - numbers[depth], target);
+            System.out.println(sum + "=" + plus + " , " + minus);
 
-        while (!que.isEmpty()) {
-            int x = que.poll();
-            System.out.println(x);
-
-            for (int i=0; i<numbers.length; i++) {
-
-            }
+            return plus + minus;
         }
+
+        //System.out.println(target + " : " + sum);
+
+        if (target != sum) return 0;
+
+        return 1;
     }
 }
