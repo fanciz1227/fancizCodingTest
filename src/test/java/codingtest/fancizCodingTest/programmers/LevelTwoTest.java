@@ -1363,19 +1363,57 @@ public class LevelTwoTest {
         int n = 3;
         int[] result = new int[2];
 
-        List<HashMap<Integer, String>> list = new ArrayList<>();
+        List<EndTalkData> list = new ArrayList<>();
+        int seq = 0;
+        boolean endCheck = true;
 
         for (int i=0; i<words.length; i++) {
-            //System.out.println((i%n)+1 + " : " + words[i]);
-            HashMap<Integer, String> map = new HashMap<>();
-            map.put((i % n) + 1, words[i]);
-            list.add(map);
+            if (i % n == 0) seq++;
+            EndTalkData talkData = new EndTalkData((i % n) + 1, words[i]);
+            list.add(talkData);
 
-            System.out.println(list.get(i));
+            //0번째는 무시하도록 설계
+            if (i > 0) {
+                //첫번째 문장의 마지막 글자와 두번째 문장의 첫글자가 일치하는지 확인
+                if (!list.get(i-1).getWord().substring(list.get(i - 1).getWord().length() - 1)
+                        .equals(list.get(i).getWord().substring(0, 1))) {
+                    result[0] = list.get(i).getUserNo();
+                    result[1] = seq;
+                    break;
+                }
+
+                int index = list.indexOf(list.get(i).getWord());
+                //만약 일치했을 경우 중복단어 여부 확인
+                if (index > -1) {
+                    if (list.get(index).getUserNo() != list.get(i).getUserNo()) {
+                        result[0] = list.get(i).getUserNo();
+                        result[1] = seq;
+                        break;
+                    }
+                }
+            }
         }
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
+    }
+
+    private class EndTalkData {
+        int userNo;
+        String word;
+
+        public int getUserNo() {
+            return userNo;
+        }
+
+        public String getWord() {
+            return word;
+        }
+
+        EndTalkData(int userNo, String word) {
+            this.userNo = userNo;
+            this.word = word;
+        }
     }
 }
