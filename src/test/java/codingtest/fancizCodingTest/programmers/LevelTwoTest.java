@@ -1358,9 +1358,9 @@ public class LevelTwoTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final int[] answer = {3, 3};
-        String[] words = {"tank", "kick", "know", "wheel", "land", "dream", "mother", "robot", "tank"};
-        int n = 3;
+        final int[] answer = {0, 0};
+        String[] words = {"hello", "observe", "effect", "take", "either", "recognize", "encourage", "ensure", "establish", "hang", "gather", "refer", "reference", "estimate", "executive"};
+        int n = 5;
         int[] result = new int[2];
 
         List<EndTalkData> list = new ArrayList<>();
@@ -1368,30 +1368,52 @@ public class LevelTwoTest {
         boolean endCheck = true;
 
         for (int i=0; i<words.length; i++) {
-            if (i % n == 0) seq++;
-            EndTalkData talkData = new EndTalkData((i % n) + 1, words[i]);
+            if (i % n == 0) seq++; //n명의 사람에 맞춰 순서를 늘려준다.
+
+            EndTalkData talkData = new EndTalkData((i % n) + 1, words[i]); //번호는 1부터 시작하도록 +1을 해준다.
             list.add(talkData);
 
-            //0번째는 무시하도록 설계
-            if (i > 0) {
-                //첫번째 문장의 마지막 글자와 두번째 문장의 첫글자가 일치하는지 확인
-                if (!list.get(i-1).getWord().substring(list.get(i - 1).getWord().length() - 1)
-                        .equals(list.get(i).getWord().substring(0, 1))) {
-                    result[0] = list.get(i).getUserNo();
-                    result[1] = seq;
+            if (i == 0) continue; //0번째는 데이터만 쌓고 무시하도록 설계
+
+            String iWord = list.get(i).getWord();
+            String beforeWord = list.get(i-1).getWord();
+            int iUserNo = list.get(i).getUserNo();
+
+            //첫번째 문장의 마지막 글자와 두번째 문장의 첫글자가 일치하는지 확인, 일치하지 않으면 result[0]에 user의 번호, result[1]에 현재 진행 seq를 넣어서 for를 종료한다.
+            if (!beforeWord.substring(beforeWord.length() - 1).equals(iWord.substring(0, 1))) {
+                result[0] = iUserNo;
+                result[1] = seq;
+                endCheck = false;
+                break;
+            }
+
+            int index = 0;
+
+            //여태 참가자들이 말한 word가 list에 쌓이고 그 안에서 같은단어를 사용한적이 있는지 확인
+            //EndTalkData class를 사용했기 때문에 indexOf를 쓸수 없어서 for문으로 data를 가져와서 직접 비교하는 방식으로 구현
+            for (int l=0; l<list.size(); l++) {
+                EndTalkData getData = list.get(l);
+
+                //이미 말했던 word가 존재한다면 발견된 index값을 세팅해서 for문을 종료한다.
+                if (getData.getWord().equals(iWord)) {
+                    index = l;
                     break;
                 }
-
-                int index = list.indexOf(list.get(i).getWord());
-                //만약 일치했을 경우 중복단어 여부 확인
-                if (index > -1) {
-                    if (list.get(index).getUserNo() != list.get(i).getUserNo()) {
-                        result[0] = list.get(i).getUserNo();
-                        result[1] = seq;
-                        break;
-                    }
-                }
             }
+
+            //만약 일치했을 경우 중복단어 여부 확인
+            if (index > -1 && list.get(index).getUserNo() != iUserNo) {
+                result[0] = iUserNo;
+                result[1] = seq;
+                endCheck = false;
+                break;
+            }
+        }
+
+        //모든 단어가 완벽하게 끝나면 틀린 데이터가 없기 때문에 {0, 0}으로 세팅해서 끝낸다.
+        if (endCheck) {
+            result[0] = 0;
+            result[1] = 0;
         }
 
         stopWatch.stop();
