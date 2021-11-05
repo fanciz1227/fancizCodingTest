@@ -1461,13 +1461,11 @@ public class LevelTwoTest {
                 seq++; //자신의 순서가 다시 돌아왔을때 한 사이클을 돌았으므로 seq를 늘려준다.
             }
 
-            String beforeWord = list.get(i - 1); //비교해야하는 이전 단어는 list에서 가져오고
-            String iWord = words[i]; //현재 단어는 words에서 꺼내서 비교한다.
-
             //이전단어의 마지막 char와 현재단어의 첫번째 char을 비교해서 같지 않으면 끝말잇기 규칙이 성립하지 않는다.
             //또 현재단어가 이전단어들이 들어가있는 list에서 검색되었을 경우 같은 단어를 반복했기 때문에 이경우에도 실패로 간주한다.
             //원래라면 5번 규칙인 한글자 단어도 걸러야하는데.. 테스트케이스에는 한글자인 단어가 없었나보다. 허술한 규칙인듯
-            if (!beforeWord.substring(beforeWord.length() - 1).equals(iWord.substring(0, 1)) || list.contains(iWord)) {
+            if (!list.get(i - 1).substring(list.get(i - 1).length() - 1).equals(words[i].substring(0, 1))
+                    || list.contains(words[i])) {
                 result[0] = userNo + 1; //배열의 구성상 0부터 시작하지만 문제에서는 순서를 1부터 시작하기 떄문에 +1을 해준다.
                 result[1] = seq; //현재까지 몇사이클 돌았는지 확인하고 몇번째 순서에서 틀렸는지 기록한다.
                 break; //틀린 경우 break를 통해 for문을 종료한다.
