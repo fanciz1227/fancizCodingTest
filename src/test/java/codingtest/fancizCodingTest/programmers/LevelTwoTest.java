@@ -1499,22 +1499,52 @@ public class LevelTwoTest {
 
         final int answer = 16;
         int[][] land = {{1,2,3,5}, {5,6,7,8}, {4,3,2,1}};
-        int result = 0;
+
+        //문제 인식을 잘못했다. 이렇게 풀면 시간초과를 유발해서 DP를 이용해 풀어야한다.
+        /*
         int seq = -1;
         int max = 0;
 
         for (int i=0; i<land.length; i++) {
             for (int j=0; j<land[i].length; j++) {
-                max = Math.max(max, land[i][j]);
+                //max = Math.max(max, land[i][j]);
+                if (max < land[i][j]) {
+                    max = land[i][j];
+                    seq = j;
+                }
 
+                //마지막 단계일때 계산 처리
                 if ((land[i].length - 1) == j) {
+                    System.out.println(max);
                     max = 0;
                 }
             }
+        }*/
+
+        //첫번째 열을 제외한 2번째 열부터 계산을 시작한다.
+        for(int i=1; i<land.length; i++) {
+            land[i][0] += max(land[i-1][1], land[i-1][2], land[i-1][3]); //기준이 되는 [i][0]에서 두번째 인자값이 0이기 때문에 0이 아닌 나머지를 매칭 해준다. 1,2,3
+            land[i][1] += max(land[i-1][0], land[i-1][2], land[i-1][3]); //두번째 인자값이 1이기 때문에 0,2,3
+            land[i][2] += max(land[i-1][0], land[i-1][1], land[i-1][3]); //두번째 인자값이 2이기 때문에 0,2,3
+            land[i][3] += max(land[i-1][0], land[i-1][1], land[i-1][2]); //두번째 인자값이 3이기 때문에 0,1,2
+            //배열의 자기 자신의 열을 처리할때마다 land[i-1] 즉 이전 행의 데이터를 가져와서 겹치지 않는 조건하에 더했을때의 가장 큰수를 계산하고 그 값을 다시 계산한 자신의 i번째 열에다가 대입해서
+            //다음 계산시에 이미 더해진 값을 기준으로 다시 판단할 수 있도록 한다.
+            //자칫 중복될 수 있는 처리를 지정을 해서 불필요한 반복이 이뤄지지 않고 더 빠르게 찾을 수 있게 함수의 계산값을 저장(memoization)하여 처리하는것을 동적 프로그래밍(Dynamic Programming) 처리라고 한다.
+        }
+
+        int max = 0;
+        //각 열에서 저장된값이 가장 마지막 열에 포함되어 있기 때문에 land[land.length-1]을 하여 land[3]열에 있는 데이터 중 가장 큰 수를 골라내서 값에 대입해준다.
+        for (int no : land[land.length-1]) {
+            max = Math.max(max, no);
         }
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
-        assertThat(answer, is(result));
+        assertThat(answer, is(max));
+    }
+
+    //3개의 숫자 중 가장 큰 값을 찾아야하기 때문에 별도로 max 함수를 빼서 작업
+    private int max(int a, int b, int c) {
+        return Math.max(Math.max(a, b), c);
     }
 }
