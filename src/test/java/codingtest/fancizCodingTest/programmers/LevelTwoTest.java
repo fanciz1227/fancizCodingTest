@@ -1575,7 +1575,11 @@ public class LevelTwoTest {
                 , {"400","con","computer","4"}, {"500","muzi","music","3"}, {"600","apeach","music","2"}};
 
         for (int i=0; i<relation.length; i++) {
+            for (int j=0; j<relation[i].length; j++) {
+                System.out.print(relation[i][j] + " ");
+            }
 
+            System.out.println();
         }
 
         stopWatch.stop();
