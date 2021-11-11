@@ -1574,11 +1574,18 @@ public class LevelTwoTest {
         String[][] relation = {{"100","ryan","music","2"}, {"200","apeach","math","2"}, {"300","tube","computer","3"}
                 , {"400","con","computer","4"}, {"500","muzi","music","3"}, {"600","apeach","music","2"}};
 
+        HashSet<String> hashSet = new HashSet<>();
+
         for (int i=0; i<relation.length; i++) {
+            String r = "";
+
             for (int j=0; j<relation[i].length; j++) {
-                System.out.print(relation[i][j] + " ");
+                r += relation[i][j];
+                System.out.println(r + " ");
+                hashSet.add(r);
             }
 
+            r = null;
             System.out.println();
         }
 
