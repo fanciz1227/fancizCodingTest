@@ -1564,6 +1564,14 @@ public class LevelTwoTest {
      *
      * 릴레이션을 나타내는 문자열 배열 relation이 매개변수로 주어질 때, 이 릴레이션에서 후보 키의 개수를 return 하도록 solution 함수를 완성하라.
      */
+    List<Integer> key = new ArrayList<>();
+
+    boolean ckMinimality(int i) {
+        for (int k : key)
+            if ((k & i) == k) return false;
+        return true;
+    }
+
     @Test
     public void 후보키() {
         StopWatch stopWatch = new StopWatch();
@@ -1574,7 +1582,7 @@ public class LevelTwoTest {
         String[][] relation = {{"100","ryan","music","2"}, {"200","apeach","math","2"}, {"300","tube","computer","3"}
                 , {"400","con","computer","4"}, {"500","muzi","music","3"}, {"600","apeach","music","2"}};
 
-        HashSet<String> hashSet = new HashSet<>();
+        /*HashSet<String> hashSet = new HashSet<>();
 
         for (int i=0; i<relation.length; i++) {
             String r = "";
@@ -1587,10 +1595,30 @@ public class LevelTwoTest {
 
             r = null;
             System.out.println();
+        }*/
+
+        int n = relation.length;
+        int m = relation[0].length;
+
+        //시프트 연산을 통한 문제 풀이
+        for (int k = 1; k < (1 << m); k++) {
+            if (!ckMinimality(k)) continue;
+
+            Set<String> set = new HashSet<>();
+            for (int i = 0; i < n; i++) {
+                StringBuilder key = new StringBuilder();
+
+                for (int j = 0; j < m; j++) {
+                    if (((1 << j) & k) > 0) key.append(relation[i][j]).append('/');
+                }
+
+                if (!set.add(key.toString())) break;
+            }
+            if (set.size() == n) key.add(k);
         }
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
-        assertThat(answer, is(result));
+        assertThat(answer, is(key.size()));
     }
 }
