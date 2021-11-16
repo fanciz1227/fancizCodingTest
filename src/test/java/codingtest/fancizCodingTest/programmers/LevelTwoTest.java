@@ -1636,6 +1636,12 @@ public class LevelTwoTest {
         int brown = 10;
         int yellow = 2;
 
+        int row = (brown+yellow) / (yellow+2);
+
+        for (int i=0; i<row; i++) {
+            System.out.println(i);
+        }
+
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(key.size()));
