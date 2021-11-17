@@ -1632,18 +1632,36 @@ public class LevelTwoTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        final int[] answer = {4, 3};
-        int brown = 10;
-        int yellow = 2;
+        final int[] answer = {8, 6};
+        int[] result = new int[2];
+        int brown = 24;
+        int yellow = 24;
+        int sum = brown + yellow;
 
-        int row = (brown+yellow) / (yellow+2);
+        //yellow격자를 둘러싼 테두리가 생성되기 위해서는 퇴소 3부터 시작해야한다.
+        //격자의 전체 면적을 확인해야하기 때문에 전체면적은 brown + yellow 만큼 확인한다.
+        for (int i=3; i<sum; i++) {
 
-        for (int i=0; i<row; i++) {
-            System.out.println(i);
+            //카펫의 전체 면적에 대한 가로세로 약수 쌍을 구한다.
+            if (sum % i == 0) {
+                int outCol = sum / i; //brown 테두리의 가로
+                int outRow = sum / outCol; //brown 테두리의 세로
+
+                int inCol = outCol - 2; //yellow 면적의 가로
+                int inRow = outRow - 2; //yellow 면적의 세로
+
+                //yellow의 가로세로 길이를 곱했을때 yellow와 같고
+                //문제에 카펫의 가로 >= 세로 조건이 있기 때문에 && 조건으로 같이 처리한다.
+                if ((inCol * inRow) == yellow && outCol >= outRow) {
+                    result[0] = outCol;
+                    result[1] = outRow;
+                    break;
+                }
+            }
         }
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
-        assertThat(answer, is(key.size()));
+        assertThat(answer, is(result));
     }
 }
