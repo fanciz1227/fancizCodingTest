@@ -1694,15 +1694,23 @@ public class LevelTwoTest {
         final String answer = "()(())()";
         String p = "()))((()";
         String result = "";
+        String u = p;
+        String v = "";
 
-        Stack<Character> stack = new Stack<>();
-
-        for (int i=0; i<p.length(); i++) {
-
-        }
+        recursive(u, v);
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
+    }
+
+    private void recursive(String u, String v) {
+        if (u.length() == 0) {
+            return;
+        } else {
+
+        }
+
+        recursive(u, v);
     }
 }
