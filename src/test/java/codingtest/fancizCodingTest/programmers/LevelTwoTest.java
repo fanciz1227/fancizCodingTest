@@ -1708,6 +1708,20 @@ public class LevelTwoTest {
         if (u.length() == 0) {
             return;
         } else {
+            Stack<Character> stack = new Stack<>();
+
+            for (int i=0; i<u.length(); i++) {
+                char ch = u.charAt(i);
+
+                if ('(' == ch) {
+                    stack.push('(');
+                } else {
+                    if (stack.isEmpty()) {
+                        break;
+                    }
+                    stack.pop();
+                }
+            }
 
         }
 
