@@ -1708,24 +1708,28 @@ public class LevelTwoTest {
 
     private void recursive(String u, String v) {
         if (u.length() == 0) {
+            result = v;
             return;
         } else {
-            String matchStr = v;
+            int left = 0;
+            int right = 0;
 
             for (int i=0; i<u.length(); i++) {
                 char ch = u.charAt(i);
 
                 if ('(' == ch) {
-                    matchStr += ch;
+                    left++;
                 } else {
-                    if (matchStr.substring(matchStr.length()-1).equals("(")) {
+                    right++;
+                }
 
-                    } else {
-                        recursive(u, matchStr);
-                    }
+                if (left != 0 && left == right) {
+                    v += u.substring(0, i+1);
+                    u = u.substring(i+1);
+
+                    recursive(u, v);
                 }
             }
-
         }
     }
 }
