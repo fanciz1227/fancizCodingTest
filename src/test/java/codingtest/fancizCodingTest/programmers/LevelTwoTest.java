@@ -1725,11 +1725,25 @@ public class LevelTwoTest {
 
                 if (left != 0 && left == right) {
                     v += u.substring(0, i+1);
-                    u = u.substring(i+1);
-
+                    u = strCheck(u.substring(i+1));
                     recursive(u, v);
                 }
             }
         }
+    }
+
+    private String strCheck(String u) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i=0; i<u.length(); i++) {
+            char ch = u.charAt(i);
+
+            if ('(' == ch) {
+                sb.append(')');
+            } else {
+                sb.append('(');
+            }
+        }
+        return sb.toString();
     }
 }
