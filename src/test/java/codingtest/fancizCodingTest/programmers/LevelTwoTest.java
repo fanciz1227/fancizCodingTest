@@ -1686,8 +1686,6 @@ public class LevelTwoTest {
      *   4-4. u의 첫 번째와 마지막 문자를 제거하고, 나머지 문자열의 괄호 방향을 뒤집어서 뒤에 붙입니다.
      *   4-5. 생성된 문자열을 반환합니다.
      */
-    String result = "";
-
     @Test
     public void 괄호_변환() {
         StopWatch stopWatch = new StopWatch();
@@ -1695,55 +1693,51 @@ public class LevelTwoTest {
 
         final String answer = "()(())()";
         String p = "()))((()";
-        String result = "";
-        String u = p;
-        String v = "";
-
-        recursive(u, v);
+        String result = sol(p);
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
         assertThat(answer, is(result));
     }
 
-    private void recursive(String u, String v) {
-        if (u.length() == 0) {
-            result = v;
-            return;
-        } else {
-            int left = 0;
-            int right = 0;
+    public static String sol(String w) {
+        if (w.equals("")) return "";
 
-            for (int i=0; i<u.length(); i++) {
-                char ch = u.charAt(i);
-
-                if ('(' == ch) {
-                    left++;
-                } else {
-                    right++;
-                }
-
-                if (left != 0 && left == right) {
-                    v += u.substring(0, i+1);
-                    u = strCheck(u.substring(i+1));
-                    recursive(u, v);
-                }
-            }
-        }
+        String u = w.substring(0, B_check(w)), v = w.substring(B_check(w), w.length());
+        return (check(u)) ? u + sol(v) : '(' + sol(v) + ')' + change(u);
     }
 
-    private String strCheck(String u) {
-        StringBuilder sb = new StringBuilder();
+    public static Boolean check(String str) {
+        int ch = 0;
 
-        for (int i=0; i<u.length(); i++) {
-            char ch = u.charAt(i);
-
-            if ('(' == ch) {
-                sb.append(')');
-            } else {
-                sb.append('(');
-            }
+        for (int i=0; i<str.length(); i++) {
+            ch += (str.charAt(i) == '(') ? 1 : -1;
+            if(ch < 0) return false;
         }
-        return sb.toString();
+
+        if (ch != 0) return false;
+
+        return true;
+    }
+
+    public static int B_check(String str) {
+        int ch = 0;
+
+        for (int i=0; i<str.length(); i++) {
+            ch += (str.charAt(i) == '(') ? 1 : -1;
+            if (ch == 0) return i + 1;
+        }
+
+        return 0;
+    }
+
+    public static String change(String str) {
+        String s = "";
+
+        for (int i=1; i<str.length()-1; i++) {
+            s += (str.charAt(i) == '(') ? ')' : '(';
+        }
+
+        return s;
     }
 }
