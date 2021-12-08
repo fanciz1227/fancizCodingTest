@@ -1703,34 +1703,44 @@ public class LevelTwoTest {
     public static String sol(String w) {
         if (w.equals("")) return "";
 
-        String u = w.substring(0, B_check(w)), v = w.substring(B_check(w), w.length());
+        String u = w.substring(0, B_check(w));
+        String v = w.substring(B_check(w), w.length());
         return (check(u)) ? u + sol(v) : '(' + sol(v) + ')' + change(u);
     }
 
+    //올바른 문장인지 판단한다.
     public static Boolean check(String str) {
         int ch = 0;
 
         for (int i=0; i<str.length(); i++) {
+            // (이면 1 )이면 -1을 하여 전체 문장의 숫자를 판단한다.
             ch += (str.charAt(i) == '(') ? 1 : -1;
+            // 0보다 작은 경우 옳지 않은 문장이라 판단하여 false를 리턴한다.
             if(ch < 0) return false;
         }
 
+        //0이 아닐경우에도 옳지 않기 떄문에 false를 리턴한다.
         if (ch != 0) return false;
 
         return true;
     }
 
+    //주어진 str 만큼 반복하며 전체 str의 올바른 문장인지 판단한다.
     public static int B_check(String str) {
         int ch = 0;
 
         for (int i=0; i<str.length(); i++) {
+            // (이면 1 )이면 -1을 하여 전체 문장의 숫자를 판단한다.
             ch += (str.charAt(i) == '(') ? 1 : -1;
+            //0이 되었을때 i에 1을 더해서 리턴한다.
             if (ch == 0) return i + 1;
         }
 
+        //기본은 0으로 리턴한다.
         return 0;
     }
 
+    //주어진 str을 모두 반대 괄호로 변경한다.
     public static String change(String str) {
         String s = "";
 
